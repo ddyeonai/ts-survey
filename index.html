@@ -40,24 +40,51 @@ textarea{width:100%;padding:14px 16px;border:1.5px solid #e2e8f0;border-radius:8
 .exp-row input{flex:1;min-width:0;text-align:center}
 .exp-title{font-size:14px;font-weight:600;color:#2d3748;margin-bottom:10px}
 
-/* 평가 슬라이더 */
+/* ── 평가 슬라이더 ── */
 .rating-question{padding:20px 16px;background:#f7fafc;border-radius:10px;margin-bottom:16px}
-.rating-label{font-size:16px;font-weight:600;color:#2d3748;margin-bottom:16px;line-height:1.55}
-.face-score-row{display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:16px;min-height:68px}
-.face-img{width:64px;height:64px;object-fit:contain;filter:drop-shadow(0 3px 8px rgba(0,0,0,0.2));display:none}
-.score-display{font-size:52px;font-weight:900;background:linear-gradient(135deg,#ff8c00,#003d82);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;line-height:1;letter-spacing:-2px}
-.score-display.empty{font-size:16px;color:#a0aec0;-webkit-text-fill-color:#a0aec0;background:none;font-weight:600}
-.score-unit{font-size:22px;font-weight:700;color:#003d82;-webkit-text-fill-color:#003d82;background:none}
+.rating-label{font-size:16px;font-weight:600;color:#2d3748;margin-bottom:14px;line-height:1.55}
 
-/* 슬라이더 트랙 */
-.slider-area{position:relative;padding:16px 0 8px}
-.track-bg{height:12px;border-radius:12px;background:linear-gradient(to right,#fc8181 0%,#fbd38d 30%,#f6e05e 50%,#68d391 75%,#0056b3 100%);position:relative;pointer-events:none}
-.native-slider{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;cursor:pointer;margin:0;padding:0;-webkit-appearance:none;appearance:none;touch-action:none}
-.native-slider::-webkit-slider-thumb{-webkit-appearance:none;width:44px;height:44px}
-.native-slider::-moz-range-thumb{width:44px;height:44px;opacity:0}
-.thumb-face{position:absolute;top:50%;transform:translate(-50%,-50%);width:52px;height:52px;pointer-events:none;z-index:5;transition:left .03s linear}
-.thumb-face img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 3px 8px rgba(0,0,0,0.25))}
-.slider-ticks{display:flex;justify-content:space-between;padding:0 2px;margin-top:6px}
+/* 캐릭터 + 점수 표시 */
+.rating-display{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:16px;min-height:72px}
+.rating-face{width:68px;height:68px;object-fit:contain;filter:drop-shadow(0 3px 8px rgba(0,0,0,0.2));transition:src .1s}
+.rating-face.hidden{display:none}
+.rating-score{font-size:56px;font-weight:900;line-height:1;letter-spacing:-2px;background:linear-gradient(135deg,#ff8c00,#003d82);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.rating-score .unit{font-size:22px;font-weight:700;color:#003d82;-webkit-text-fill-color:#003d82;background:none}
+.rating-hint{font-size:15px;color:#a0aec0;font-weight:500}
+
+/* 슬라이더 트랙: 무지개 배경 유지 */
+.slider-wrap{margin:4px 0 10px;padding:8px 0}
+.score-slider{
+  -webkit-appearance:none;
+  appearance:none;
+  width:100%;
+  height:12px;
+  border-radius:12px;
+  background:linear-gradient(to right,#fc8181 0%,#fbd38d 30%,#f6e05e 50%,#68d391 75%,#0056b3 100%);
+  outline:none;
+  cursor:pointer;
+  display:block;
+}
+/* thumb: 기본 동그라미 스타일만, 이미지 X */
+.score-slider::-webkit-slider-thumb{
+  -webkit-appearance:none;
+  width:36px;height:36px;
+  border-radius:50%;
+  background:white;
+  border:4px solid #003d82;
+  box-shadow:0 2px 8px rgba(0,61,130,0.3);
+  cursor:pointer;
+}
+.score-slider::-moz-range-thumb{
+  width:36px;height:36px;
+  border-radius:50%;
+  background:white;
+  border:4px solid #003d82;
+  box-shadow:0 2px 8px rgba(0,61,130,0.3);
+  cursor:pointer;
+}
+
+.slider-ticks{display:flex;justify-content:space-between;padding:0 2px;margin-top:4px}
 .slider-ticks span{font-size:13px;color:#718096;font-weight:600}
 .rating-legend{display:flex;justify-content:space-between;font-size:13px;font-weight:700;margin-top:6px}
 .rating-legend .low{color:#e53e3e}
@@ -247,36 +274,27 @@ window.addEventListener('DOMContentLoaded', function() {
 
   var SHEET_URL = 'https://script.google.com/macros/s/AKfycbwkhAQkLibwWOq30YiTxXTdPa1j6BK6jDK0yWVYqzmUQ_o0zKRO1mFEMd-3xMuBPVb1/exec';
   var BASE = 'https://ddyeonai.github.io/ts-survey/';
-  var FACES = { sad: BASE+'sad.png', neutral: BASE+'neutral.png', happy: BASE+'happy.png' };
   var ratings = {};
 
-  var t = new Date();
-  document.getElementById('eduDate').value = t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0');
-
-  function getFace(v){ return v<=3?FACES.sad:v<=6?FACES.neutral:FACES.happy; }
-
-  // 슬라이더 thumb 이미지를 동적 style 태그로 적용 (가장 안정적인 방법)
-  function applyThumbImg(idx, val) {
-    var url = getFace(val);
-    var id = 'ts'+idx;
-    var el = document.getElementById(id);
-    if (!el) { el = document.createElement('style'); el.id = id; document.head.appendChild(el); }
-    el.textContent =
-      '#sl'+idx+'::-webkit-slider-thumb{background-image:url("'+url+'")!important}'+
-      '#sl'+idx+'::-moz-range-thumb{background-image:url("'+url+'")!important}';
+  function getFace(v) {
+    return v <= 3 ? BASE+'sad.png' : v <= 6 ? BASE+'neutral.png' : BASE+'happy.png';
   }
 
-  function updateRating(idx, val) {
-    val = Math.min(10, Math.max(1, Math.round(val)));
+  // 슬라이더 값 변경 시 화면 업데이트
+  function onRate(idx, val) {
+    val = Math.min(10, Math.max(1, val));
     ratings[idx] = String(val);
+    // 점수
     var sc = document.getElementById('sc'+idx);
-    sc.classList.remove('empty');
-    sc.innerHTML = val+'<span class="score-unit">점</span>';
+    sc.innerHTML = val + '<span class="unit">점</span>';
+    sc.style.display = 'block';
+    // 캐릭터
     var fi = document.getElementById('fi'+idx);
-    fi.style.display = 'block';
     fi.src = getFace(val);
-    document.getElementById('sl'+idx).value = val;
-    applyThumbImg(idx, val);
+    fi.classList.remove('hidden');
+    // 힌트 숨김
+    document.getElementById('hint'+idx).style.display = 'none';
+    // 에러 숨김
     document.getElementById('err-r'+idx).classList.remove('show');
   }
 
@@ -300,41 +318,39 @@ window.addEventListener('DOMContentLoaded', function() {
     d.id = 'rq'+i;
     d.innerHTML =
       '<div class="rating-label">'+(i+1)+'. '+q+'<span class="required">*</span></div>'+
-      '<div class="face-score-row">'+
-        '<span class="score-display empty" id="sc'+i+'">슬라이더를 움직여 주세요</span>'+
-        '<img class="face-img" id="fi'+i+'" src="" alt="">'+
+      '<div class="rating-display">'+
+        '<img class="rating-face hidden" id="fi'+i+'" src="" alt="">'+
+        '<div>'+
+          '<span class="rating-hint" id="hint'+i+'">슬라이더를 움직여 주세요</span>'+
+          '<span class="rating-score" id="sc'+i+'" style="display:none"></span>'+
+        '</div>'+
       '</div>'+
       '<div class="slider-wrap">'+
-        '<input type="range" class="score-slider" id="sl'+i+'" min="1" max="10" step="1" value="5">'+
+        '<input type="range" class="score-slider" id="sl'+i+'" min="1" max="10" step="1" value="1">'+
       '</div>'+
       '<div class="slider-ticks"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span></div>'+
       '<div class="rating-legend"><span class="low">◀ 매우 불만족</span><span class="high">매우 만족 ▶</span></div>'+
       '<div class="error-msg" id="err-r'+i+'">점수를 선택해 주세요</div>';
     rc.appendChild(d);
 
-    var sl = document.getElementById('sl'+i);
-
-    function calcFromTouch(clientX) {
-      var rect = sl.getBoundingClientRect();
-      var pct = Math.min(Math.max((clientX - rect.left) / rect.width, 0), 1);
-      return Math.round(1 + pct * 9);
-    }
-
-    // PC
-    sl.addEventListener('input', function(){ updateRating(i, parseInt(this.value)); });
-    sl.addEventListener('change', function(){ updateRating(i, parseInt(this.value)); });
-
-    // 모바일
-    sl.addEventListener('touchstart', function(e){ updateRating(i, calcFromTouch(e.touches[0].clientX)); }, {passive:true});
-    sl.addEventListener('touchmove',  function(e){ updateRating(i, calcFromTouch(e.touches[0].clientX)); }, {passive:true});
-    sl.addEventListener('touchend',   function(e){ updateRating(i, calcFromTouch(e.changedTouches[0].clientX)); }, {passive:true});
+    (function(idx) {
+      var sl = document.getElementById('sl'+idx);
+      // PC & Android
+      sl.addEventListener('input', function() {
+        onRate(idx, parseInt(this.value));
+      });
+      // iOS Safari 대응
+      sl.addEventListener('change', function() {
+        onRate(idx, parseInt(this.value));
+      });
+    })(i);
   });
 
   // 라디오 스타일
   document.addEventListener('change', function(e) {
     if (e.target.type === 'radio') {
-      var name = e.target.name;
-      document.querySelectorAll('input[name="'+name+'"]').forEach(function(r) {
+      var n = e.target.name;
+      document.querySelectorAll('input[name="'+n+'"]').forEach(function(r) {
         r.closest('.radio-item').classList.toggle('checked', r.checked);
       });
     }
@@ -345,13 +361,11 @@ window.addEventListener('DOMContentLoaded', function() {
       document.getElementById('bizCareerBox').classList.toggle('show', ['1','2','3','4','5'].indexOf(this.value)>-1);
     });
   });
-
   document.querySelectorAll('input[name="satisfied"]').forEach(function(r) {
     r.addEventListener('change', function() {
       document.getElementById('satisfiedEtcBox').classList.toggle('show', this.value==='기타');
     });
   });
-
   ['imp_edu','imp_facility','imp_etc'].forEach(function(n) {
     document.querySelectorAll('input[name="'+n+'"]').forEach(function(r) {
       r.addEventListener('change', function() {
@@ -359,6 +373,10 @@ window.addEventListener('DOMContentLoaded', function() {
       });
     });
   });
+
+  // 오늘 날짜
+  var t = new Date();
+  document.getElementById('eduDate').value = t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0');
 
   // 제출
   document.getElementById('submitBtn').addEventListener('click', function() {
@@ -384,10 +402,8 @@ window.addEventListener('DOMContentLoaded', function() {
       if (!document.getElementById('bizYear').value && !document.getElementById('bizMonth').value)
         markErr('err-bizExp','bizCareerBox');
     }
-
     if (!document.getElementById('privYear').value && !document.getElementById('privMonth').value)
       markErr('err-privCareer','privYear');
-
     if (!document.querySelector('input[name="transfer"]:checked')) markErr('err-transfer','err-transfer');
 
     for (var i=0; i<10; i++) {
@@ -402,8 +418,8 @@ window.addEventListener('DOMContentLoaded', function() {
     var impErr = false;
     ['imp_edu','imp_facility','imp_etc'].forEach(function(n) {
       var ck = document.querySelector('input[name="'+n+'"]:checked');
-      if (!ck) { impErr=true; }
-      else if (ck.value==='2' && !document.getElementById(n+'_text').value.trim()) { impErr=true; }
+      if (!ck) impErr = true;
+      else if (ck.value==='2' && !document.getElementById(n+'_text').value.trim()) impErr = true;
     });
     if (impErr) markErr('err-improvement','err-improvement');
 
@@ -419,9 +435,9 @@ window.addEventListener('DOMContentLoaded', function() {
     btn.textContent = '제출 중...';
 
     var hasBiz = ['1','2','3','4','5'].indexOf(bizCk.value)>-1;
-    var bizM = hasBiz?(parseInt(document.getElementById('bizYear').value||'0')*12+parseInt(document.getElementById('bizMonth').value||'0')):'';
-    var privM = parseInt(document.getElementById('privYear').value||'0')*12+parseInt(document.getElementById('privMonth').value||'0');
-    var satText = satCk.value==='기타'?document.getElementById('satisfiedEtcText').value.trim():satCk.value;
+    var bizM = hasBiz ? (parseInt(document.getElementById('bizYear').value||'0')*12 + parseInt(document.getElementById('bizMonth').value||'0')) : '';
+    var privM = parseInt(document.getElementById('privYear').value||'0')*12 + parseInt(document.getElementById('privMonth').value||'0');
+    var satText = satCk.value==='기타' ? document.getElementById('satisfiedEtcText').value.trim() : satCk.value;
     var iEdu = document.querySelector('input[name="imp_edu"]:checked').value;
     var iFac = document.querySelector('input[name="imp_facility"]:checked').value;
     var iEtc = document.querySelector('input[name="imp_etc"]:checked').value;
