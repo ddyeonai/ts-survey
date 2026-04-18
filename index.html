@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>TS 고객만족도 조사</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+    background: linear-gradient(135deg, #f0f4f8 0%, #e8eef5 100%);
+    color: #1a2332;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+  .container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 16px 40px;
+  }
+  .header {
+    background: white;
+    color: #1a2332;
+    padding: 36px 20px 32px;
+    text-align: center;
+    margin: 0 -16px 24px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border-bottom: 4px solid #003d82;
+  }
+  .ts-logo {
+    font-size: 80px;
+    font-weight: 900;
+    letter-spacing: -2px;
+    line-height: 1;
+    margin-bottom: 18px;
+    font-family: 'Arial Black', 'Malgun Gothic', sans-serif;
+    display: inline-block;
+    padding: 0 8px;
+  }
+  .ts-logo .t {
+    background: linear-gradient(135deg, #ff8c00 0%, #ffa500 50%, #ff6b00 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .ts-logo .s {
+    background: linear-gradient(135deg, #1e3a8a 0%, #0056b3 50%, #003d82 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .header .center-name {
+    font-size: 19px;
+    font-weight: 700;
+    color: #2d3748;
+    margin-bottom: 20px;
+    letter-spacing: -0.5px;
+  }
+  .header h1 {
+    font-size: 28px;
+    font-weight: 800;
+    color: #003d82;
+    letter-spacing: -1px;
+    padding-top: 16px;
+    border-top: 2px solid #e2e8f0;
+    display: inline-block;
+    padding-left: 36px;
+    padding-right: 36px;
+  }
+  .intro-box {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    border-left: 4px solid #0056b3;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+  .intro-box p {
+    font-size: 14px;
+    color: #4a5568;
+    line-height: 1.6;
+  }
+  .section {
+    background: white;
+    border-radius: 12px;
+    padding: 24px 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+  .section-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: #003d82;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-num {
+    background: #003d82;
+    color: white;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .section-desc {
+    font-size: 14px;
+    color: #718096;
+    margin-bottom: 20px;
+    padding-left: 36px;
+  }
+  .question {
+    margin-bottom: 24px;
+  }
+  .question:last-child { margin-bottom: 0; }
+  .q-label {
+    display: block;
+    font-size: 16px;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 12px;
+    line-height: 1.5;
+  }
+  .required {
+    color: #e53e3e;
+    font-weight: 700;
+    margin-left: 2px;
+  }
+  input[type="text"], input[type="number"], input[type="date"], select, textarea {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 16px;
+    font-family: inherit;
+    background: white;
+    color: #1a2332;
+    transition: all 0.2s;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: #0056b3;
+    box-shadow: 0 0 0 3px rgba(0, 86, 179, 0.1);
+  }
+  textarea {
+    resize: vertical;
+    min-height: 100px;
+    font-family: inherit;
+  }
+  .radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .radio-item {
+    display: flex;
+    align-items: center;
+    padding: 14px 16px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+    background: white;
+  }
+  .radio-item:active { transform: scale(0.98); }
+  .radio-item input[type="radio"] {
+    width: 20px;
+    height: 20px;
+    margin-right: 12px;
+    accent-color: #0056b3;
+    flex-shrink: 0;
+  }
+  .radio-item.checked {
+    border-color: #0056b3;
+    background: #eff6ff;
+  }
+  .radio-label {
+    font-size: 16px;
+    color: #2d3748;
+    flex: 1;
+    font-weight: 500;
+  }
+  .radio-row {
+    display: flex;
+    gap: 10px;
+  }
+  .radio-row .radio-item { flex: 1; }
+
+  .experience-input {
+    display: none;
+    margin-top: 12px;
+    padding: 16px;
+    background: #fff8f0;
+    border-radius: 8px;
+    border: 1.5px solid #ffd9a8;
+  }
+  .experience-input.show { display: block; }
+  .year-month-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  .year-month-row label {
+    font-size: 15px;
+    color: #4a5568;
+    white-space: nowrap;
+    font-weight: 600;
+  }
+  .year-month-row input {
+    flex: 1;
+    min-width: 0;
+    text-align: center;
+  }
+  .sub-label {
+    font-size: 14px;
+    color: #2d3748;
+    margin-bottom: 10px;
+    display: block;
+    font-weight: 600;
+  }
+
+  /* 10점 슬라이더 */
+  .rating-question {
+    padding: 20px 16px;
+    background: #f7fafc;
+    border-radius: 10px;
+    margin-bottom: 16px;
+  }
+  .rating-label {
+    font-size: 16px;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 20px;
+    line-height: 1.55;
+  }
+  .slider-container {
+    padding: 0 4px;
+  }
+  .slider-score-display {
+    text-align: center;
+    margin-bottom: 18px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .slider-score {
+    font-size: 54px;
+    font-weight: 900;
+    background: linear-gradient(135deg, #ff8c00 0%, #003d82 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1;
+    letter-spacing: -2px;
+  }
+  .slider-score.empty {
+    font-size: 17px;
+    color: #a0aec0;
+    -webkit-text-fill-color: #a0aec0;
+    background: none;
+    font-weight: 600;
+  }
+  .slider-score .unit {
+    font-size: 24px;
+    font-weight: 700;
+    margin-left: 4px;
+    color: #003d82;
+    -webkit-text-fill-color: #003d82;
+    background: none;
+  }
+  .score-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 10px;
+    border-radius: 10px;
+    background: linear-gradient(to right, #fc8181 0%, #fbd38d 30%, #f6e05e 50%, #68d391 75%, #0056b3 100%);
+    outline: none;
+    margin: 8px 0 16px;
+    cursor: pointer;
+  }
+  .score-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: white;
+    border: 4px solid #003d82;
+    cursor: pointer;
+    box-shadow: 0 3px 10px rgba(0, 61, 130, 0.35);
+    transition: transform 0.15s;
+  }
+  .score-slider::-webkit-slider-thumb:active {
+    transform: scale(1.15);
+  }
+  .score-slider::-moz-range-thumb {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: white;
+    border: 4px solid #003d82;
+    cursor: pointer;
+    box-shadow: 0 3px 10px rgba(0, 61, 130, 0.35);
+  }
+  .slider-ticks {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 10px;
+    margin-top: -6px;
+    margin-bottom: 8px;
+  }
+  .slider-ticks span {
+    font-size: 12px;
+    color: #a0aec0;
+    font-weight: 600;
+  }
+  .rating-legend {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 0 4px;
+    margin-top: 4px;
+  }
+  .rating-legend .low {
+    color: #e53e3e;
+  }
+  .rating-legend .high {
+    color: #0056b3;
+  }
+
+  /* 개선점 서브 섹션 */
+  .improvement-category {
+    padding: 18px 16px;
+    background: #f7fafc;
+    border-radius: 10px;
+    margin-bottom: 14px;
+  }
+  .improvement-category:last-child { margin-bottom: 0; }
+  .improvement-category-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #003d82;
+    margin-bottom: 12px;
+  }
+  .improvement-textarea {
+    display: none;
+    margin-top: 12px;
+  }
+  .improvement-textarea.show { display: block; }
+
+  /* 기타 서술형 */
+  .etc-textarea {
+    display: none;
+    margin-top: 12px;
+  }
+  .etc-textarea.show { display: block; }
+
+  .submit-btn {
+    width: 100%;
+    padding: 20px;
+    background: linear-gradient(135deg, #003d82 0%, #0056b3 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 24px;
+    box-shadow: 0 4px 14px rgba(0, 61, 130, 0.3);
+    transition: all 0.2s;
+    -webkit-appearance: none;
+  }
+  .submit-btn:active { transform: scale(0.98); }
+  .submit-btn:disabled {
+    background: #a0aec0;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+
+  /* 완료 화면 */
+  .complete-screen {
+    display: none;
+    text-align: center;
+    padding: 60px 20px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    margin-top: 40px;
+  }
+  .complete-screen.show { display: block; }
+  .complete-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #003d82, #0056b3);
+    border-radius: 50%;
+    margin: 0 auto 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 40px;
+    box-shadow: 0 8px 24px rgba(0, 86, 179, 0.3);
+  }
+  .complete-screen h2 {
+    color: #003d82;
+    font-size: 24px;
+    margin-bottom: 12px;
+  }
+  .complete-screen p {
+    color: #4a5568;
+    font-size: 16px;
+    line-height: 1.7;
+  }
+
+  .error-msg {
+    color: #e53e3e;
+    font-size: 14px;
+    margin-top: 8px;
+    display: none;
+    font-weight: 600;
+  }
+  .error-msg.show { display: block; }
+
+  /* 진행 상태 */
+  .progress-bar {
+    position: sticky;
+    top: 0;
+    height: 4px;
+    background: #e2e8f0;
+    z-index: 100;
+    margin: 0 -16px 0;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #ff8c00, #003d82);
+    width: 0%;
+    transition: width 0.3s;
+  }
+
+  @media (max-width: 400px) {
+    .ts-logo { font-size: 68px; letter-spacing: -1px; }
+    .header h1 { font-size: 24px; padding-left: 24px; padding-right: 24px; }
+    .header .center-name { font-size: 17px; }
+    .slider-score { font-size: 48px; }
+    .radio-label { font-size: 15px; }
+    .rating-legend { font-size: 13px; }
+    .slider-ticks span { font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+  <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+  <div class="container">
+    <div class="header">
+      <div class="ts-logo"><span class="t">T</span><span class="s">S</span></div>
+      <div class="center-name">상주교통안전체험교육센터</div>
+      <h1>고객만족도 조사</h1>
+    </div>
+
+    <div id="surveyForm">
+      <div class="intro-box">
+        <p>안녕하세요. 교통안전체험교육센터 교육에 참여해 주셔서 감사합니다.<br>더 나은 교육 서비스 제공을 위해 여러분의 소중한 의견을 들려주세요. 응답 내용은 통계 목적으로만 활용됩니다.</p>
+      </div>
+
+      <!-- 교육 정보 -->
+      <div class="section">
+        <div class="section-title"><span class="section-num">ⓘ</span>교육 정보</div>
+        <div class="section-desc">교육 입소 일자를 선택해 주세요</div>
+
+        <div class="question">
+          <label class="q-label">교육 입소 일자<span class="required">*</span></label>
+          <input type="date" id="eduDate" required>
+          <div class="error-msg">교육 입소 일자를 선택해 주세요</div>
+        </div>
+      </div>
+
+      <!-- 1. 기초조사 -->
+      <div class="section">
+        <div class="section-title"><span class="section-num">1</span>기초조사</div>
+        <div class="section-desc">응답자에 관한 기본적인 사항입니다</div>
+
+        <div class="question">
+          <label class="q-label">연령<span class="required">*</span></label>
+          <input type="number" id="age" min="20" max="100" placeholder="만 나이를 입력해 주세요" required>
+          <div class="error-msg">연령을 입력해 주세요</div>
+        </div>
+
+        <div class="question">
+          <label class="q-label">성별<span class="required">*</span></label>
+          <div class="radio-row">
+            <label class="radio-item"><input type="radio" name="gender" value="1"><span class="radio-label">남자</span></label>
+            <label class="radio-item"><input type="radio" name="gender" value="2"><span class="radio-label">여자</span></label>
+          </div>
+          <div class="error-msg">성별을 선택해 주세요</div>
+        </div>
+
+        <div class="question">
+          <label class="q-label">사업용 차량 운전경험<span class="required">*</span></label>
+          <div class="radio-group">
+            <label class="radio-item"><input type="radio" name="bizExp" value="1"><span class="radio-label">1. 택시</span></label>
+            <label class="radio-item"><input type="radio" name="bizExp" value="2"><span class="radio-label">2. 버스</span></label>
+            <label class="radio-item"><input type="radio" name="bizExp" value="3"><span class="radio-label">3. 화물</span></label>
+            <label class="radio-item"><input type="radio" name="bizExp" value="4"><span class="radio-label">4. 건설기계</span></label>
+            <label class="radio-item"><input type="radio" name="bizExp" value="5"><span class="radio-label">5. 타인에게 고용된 운전경력 (자가용 승용, 화물, 건설기계)</span></label>
+            <label class="radio-item"><input type="radio" name="bizExp" value="6"><span class="radio-label">6. 해당없음</span></label>
+          </div>
+          <div class="error-msg">항목을 선택해 주세요</div>
+
+          <div class="experience-input" id="bizCareerDetail">
+            <span class="sub-label">📌 사업용 운전경력 기간을 입력해 주세요</span>
+            <div class="year-month-row">
+              <input type="number" id="bizYear" min="0" max="60" placeholder="0">
+              <label>년</label>
+              <input type="number" id="bizMonth" min="0" max="11" placeholder="0">
+              <label>개월</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="q-label">자가용 운전경력<span class="required">*</span></label>
+          <div class="year-month-row">
+            <input type="number" id="privYear" min="0" max="80" placeholder="0">
+            <label>년</label>
+            <input type="number" id="privMonth" min="0" max="11" placeholder="0">
+            <label>개월</label>
+          </div>
+          <div class="error-msg">자가용 운전경력을 입력해 주세요</div>
+        </div>
+      </div>
+
+      <!-- 2. 개인택시 양수 -->
+      <div class="section">
+        <div class="section-title"><span class="section-num">2</span>개인택시 양수 계획</div>
+        <div class="section-desc">개인택시 양수와 관련된 질문입니다</div>
+
+        <div class="question">
+          <label class="q-label">택시교육 수료 후 언제 양수할 계획이십니까?<span class="required">*</span></label>
+          <div class="radio-group">
+            <label class="radio-item"><input type="radio" name="transfer" value="1"><span class="radio-label">1. 사전계약 체결</span></label>
+            <label class="radio-item"><input type="radio" name="transfer" value="2"><span class="radio-label">2. 즉시 또는 1개월 이내</span></label>
+            <label class="radio-item"><input type="radio" name="transfer" value="3"><span class="radio-label">3. 3개월 이내</span></label>
+            <label class="radio-item"><input type="radio" name="transfer" value="4"><span class="radio-label">4. 6개월 이내</span></label>
+            <label class="radio-item"><input type="radio" name="transfer" value="5"><span class="radio-label">5. 1년 이내</span></label>
+            <label class="radio-item"><input type="radio" name="transfer" value="6"><span class="radio-label">6. 양수시점 미정</span></label>
+          </div>
+          <div class="error-msg">항목을 선택해 주세요</div>
+        </div>
+      </div>
+
+      <!-- 3. 교육 전반 평가 -->
+      <div class="section">
+        <div class="section-title"><span class="section-num">3</span>교육 전반 평가</div>
+        <div class="section-desc">각 문항에 대해 1점 ~ 10점으로 평가해 주세요</div>
+
+        <div id="ratingContainer"></div>
+      </div>
+
+      <!-- 4. 만족 및 개선사항 -->
+      <div class="section">
+        <div class="section-title"><span class="section-num">4</span>의견 및 개선사항</div>
+        <div class="section-desc">소중한 의견을 들려주세요</div>
+
+        <div class="question">
+          <label class="q-label">교육과정 중 가장 만족스러운 내용은 무엇입니까?<span class="required">*</span></label>
+          <div class="radio-group">
+            <label class="radio-item"><input type="radio" name="satisfied" value="1"><span class="radio-label">1. 체험교육</span></label>
+            <label class="radio-item"><input type="radio" name="satisfied" value="2"><span class="radio-label">2. 교수진</span></label>
+            <label class="radio-item"><input type="radio" name="satisfied" value="3"><span class="radio-label">3. 시설</span></label>
+            <label class="radio-item"><input type="radio" name="satisfied" value="4"><span class="radio-label">4. 기타</span></label>
+          </div>
+          <div class="error-msg">항목을 선택해 주세요</div>
+          <div class="etc-textarea" id="satisfiedEtc">
+            <textarea id="satisfied_etc_text" placeholder="기타 만족스러운 내용을 작성해 주세요"></textarea>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="q-label">개선점 및 불편사항이 있으시면 선택 후 상세히 기재하여 주십시오<span class="required">*</span></label>
+
+          <!-- 교육 관련 -->
+          <div class="improvement-category">
+            <div class="improvement-category-title">① 교육 관련</div>
+            <div class="radio-row">
+              <label class="radio-item"><input type="radio" name="imp_edu_yn" value="1"><span class="radio-label">1. 없음</span></label>
+              <label class="radio-item"><input type="radio" name="imp_edu_yn" value="2"><span class="radio-label">2. 있음</span></label>
+            </div>
+            <div class="improvement-textarea" id="imp_edu_detail">
+              <textarea id="imp_edu_text" placeholder="교육 관련 개선점을 상세히 작성해 주세요"></textarea>
+            </div>
+          </div>
+
+          <!-- 시설 관련 -->
+          <div class="improvement-category">
+            <div class="improvement-category-title">② 시설 관련</div>
+            <div class="radio-row">
+              <label class="radio-item"><input type="radio" name="imp_facility_yn" value="1"><span class="radio-label">1. 없음</span></label>
+              <label class="radio-item"><input type="radio" name="imp_facility_yn" value="2"><span class="radio-label">2. 있음</span></label>
+            </div>
+            <div class="improvement-textarea" id="imp_facility_detail">
+              <textarea id="imp_facility_text" placeholder="시설 관련 개선점을 상세히 작성해 주세요"></textarea>
+            </div>
+          </div>
+
+          <!-- 기타 의견 -->
+          <div class="improvement-category">
+            <div class="improvement-category-title">③ 기타 의견</div>
+            <div class="radio-row">
+              <label class="radio-item"><input type="radio" name="imp_etc_yn" value="1"><span class="radio-label">1. 없음</span></label>
+              <label class="radio-item"><input type="radio" name="imp_etc_yn" value="2"><span class="radio-label">2. 있음</span></label>
+            </div>
+            <div class="improvement-textarea" id="imp_etc_detail">
+              <textarea id="imp_etc_text" placeholder="기타 의견을 상세히 작성해 주세요"></textarea>
+            </div>
+          </div>
+
+          <div class="error-msg" id="improvementError">모든 항목을 선택하고 '있음' 선택 시 내용을 작성해 주세요</div>
+        </div>
+      </div>
+
+      <button class="submit-btn" id="submitBtn">설문 제출하기</button>
+      <div id="debugMsg" style="margin-top:16px;padding:14px;background:#fff3cd;border-radius:8px;font-size:14px;color:#856404;display:none;word-break:break-all;"></div>
+    </div>
+
+    <!-- 완료 화면 -->
+    <div class="complete-screen" id="completeScreen">
+      <div class="complete-icon">✓</div>
+      <h2>설문이 완료되었습니다</h2>
+      <p>소중한 의견을 보내주셔서 감사합니다.<br>더 나은 교육 서비스 제공을 위해<br>귀하의 의견을 적극 반영하겠습니다.</p>
+    </div>
+  </div>
+
+<script>
+  // 10점 척도 문항
+  const ratingQuestions = [
+    "교통안전체험교육센터의 서비스는 나의 이용 목적에 부합한다.",
+    "교통안전체험교육센터는 국가나 사회의 미래가치 창출을 위한 업무를 수행하고 있다.",
+    "교통안전체험교육센터의 교육이 타 공공기관 교육 대비 우수하다고 생각한다.",
+    "교통안전체험교육센터에서 제공하는 서비스는 이용하는데에 문제가 없다.",
+    "교통안전체험교육센터 직원들의 태도는 친절하고 만족스럽다.",
+    "교통안전체험교육센터는 필요한 정보나 업무처리결과를 분명하게 알려준다.",
+    "교통안전체험교육센터의 시설은 쾌적하다.",
+    "교육 수료 후 교통안전체험교육센터에 대해 긍정적으로 생각할 것이다.",
+    "교통안전체험교육센터 직원은 내가 필요한 서비스를 제공하기 위해 최선을 다한다.",
+    "교통안전체험교육센터의 교육 서비스는 전반적으로 만족스럽다."
+  ];
+
+  const ratingContainer = document.getElementById('ratingContainer');
+  ratingQuestions.forEach((q, idx) => {
+    const div = document.createElement('div');
+    div.className = 'rating-question';
+    div.innerHTML = `
+      <div class="rating-label">${idx + 1}. ${q}<span class="required">*</span></div>
+      <div class="slider-container">
+        <div class="slider-score-display">
+          <span class="slider-score empty" id="score-display-${idx}">아래 슬라이더를 움직여 주세요</span>
+        </div>
+        <input type="range" class="score-slider" id="slider-${idx}" data-question="${idx}" min="1" max="10" step="1" value="5">
+        <div class="slider-ticks">
+          <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span>
+        </div>
+        <div class="rating-legend"><span class="low">◀ 매우 불만족</span><span class="high">매우 만족 ▶</span></div>
+      </div>
+      <div class="error-msg">점수를 선택해 주세요</div>
+    `;
+    ratingContainer.appendChild(div);
+  });
+
+  // 슬라이더 이벤트
+  const ratings = {};
+  document.querySelectorAll('.score-slider').forEach(slider => {
+    const qIdx = slider.dataset.question;
+    const display = document.getElementById(`score-display-${qIdx}`);
+    
+    // 초기 상태: 슬라이더는 중간(5)에 있지만 값은 선택 안 된 것으로 처리
+    slider.addEventListener('input', (e) => {
+      const val = e.target.value;
+      ratings[qIdx] = val;
+      display.classList.remove('empty');
+      display.innerHTML = `${val}<span class="unit">점</span>`;
+      slider.closest('.rating-question').querySelector('.error-msg').classList.remove('show');
+      updateProgress();
+    });
+  });
+
+  // 라디오 시각적 업데이트
+  document.querySelectorAll('input[type="radio"]').forEach(radio => {
+    radio.addEventListener('change', (e) => {
+      const name = e.target.name;
+      document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
+        r.closest('.radio-item').classList.toggle('checked', r.checked);
+      });
+      const errorMsg = e.target.closest('.question').querySelector('.error-msg');
+      if (errorMsg) errorMsg.classList.remove('show');
+      updateProgress();
+    });
+  });
+
+  // 사업용 경력 토글 (해당없음=6 제외, 1~5 선택 시 표시)
+  document.querySelectorAll('input[name="bizExp"]').forEach(r => {
+    r.addEventListener('change', (e) => {
+      const show = ['1','2','3','4','5'].includes(e.target.value);
+      document.getElementById('bizCareerDetail').classList.toggle('show', show);
+    });
+  });
+
+  // 만족 내용 '기타' 토글
+  document.querySelectorAll('input[name="satisfied"]').forEach(r => {
+    r.addEventListener('change', (e) => {
+      document.getElementById('satisfiedEtc').classList.toggle('show', e.target.value === '4');
+    });
+  });
+
+  // 개선점 토글
+  ['imp_edu_yn', 'imp_facility_yn', 'imp_etc_yn'].forEach(name => {
+    document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
+      r.addEventListener('change', (e) => {
+        const detailId = name.replace('_yn', '_detail');
+        document.getElementById(detailId).classList.toggle('show', e.target.value === '2');
+      });
+    });
+  });
+
+  // 입력 이벤트
+  document.querySelectorAll('input, textarea, select').forEach(el => {
+    el.addEventListener('input', () => {
+      const q = el.closest('.question');
+      if (q) {
+        const err = q.querySelector('.error-msg');
+        if (err) err.classList.remove('show');
+      }
+      updateProgress();
+    });
+  });
+
+  // 진행률 업데이트
+  function updateProgress() {
+    let total = 18; // eduDate, age, gender, bizExp, privCareer, transfer, 10 ratings, satisfied, 3 improvements
+    let filled = 0;
+    if (document.getElementById('eduDate').value) filled++;
+    if (document.getElementById('age').value) filled++;
+    if (document.querySelector('input[name="gender"]:checked')) filled++;
+    if (document.querySelector('input[name="bizExp"]:checked')) filled++;
+    if (document.getElementById('privYear').value !== '' || document.getElementById('privMonth').value !== '') filled++;
+    if (document.querySelector('input[name="transfer"]:checked')) filled++;
+    filled += Object.keys(ratings).length;
+    if (document.querySelector('input[name="satisfied"]:checked')) filled++;
+    if (document.querySelector('input[name="imp_edu_yn"]:checked')) filled++;
+    if (document.querySelector('input[name="imp_facility_yn"]:checked')) filled++;
+    if (document.querySelector('input[name="imp_etc_yn"]:checked')) filled++;
+    document.getElementById('progressFill').style.width = Math.min(100, (filled / total) * 100) + '%';
+  }
+
+  // 제출
+  document.getElementById('submitBtn').addEventListener('click', () => {
+    let hasError = false;
+    let firstError = null;
+
+    const showError = (elOrQuestion) => {
+      const q = elOrQuestion.closest ? elOrQuestion.closest('.question') || elOrQuestion : elOrQuestion;
+      const err = q.querySelector('.error-msg');
+      if (err) err.classList.add('show');
+      if (!firstError) firstError = q;
+      hasError = true;
+    };
+
+    // 기본 정보
+    if (!document.getElementById('eduDate').value) showError(document.getElementById('eduDate'));
+    // 기초조사
+    if (!document.getElementById('age').value) showError(document.getElementById('age'));
+    if (!document.querySelector('input[name="gender"]:checked')) showError(document.querySelector('input[name="gender"]'));
+    
+    const bizExpChecked = document.querySelector('input[name="bizExp"]:checked');
+    if (!bizExpChecked) showError(document.querySelector('input[name="bizExp"]'));
+    else if (['1','2','3','4','5'].includes(bizExpChecked.value)) {
+      // 사업용 경력 필수
+      if (document.getElementById('bizYear').value === '' && document.getElementById('bizMonth').value === '') {
+        showError(document.querySelector('input[name="bizExp"]'));
+      }
+    }
+    
+    if (document.getElementById('privYear').value === '' && document.getElementById('privMonth').value === '') {
+      showError(document.getElementById('privYear'));
+    }
+    // 양수
+    if (!document.querySelector('input[name="transfer"]:checked')) showError(document.querySelector('input[name="transfer"]'));
+    // 평점
+    for (let i = 0; i < 10; i++) {
+      if (!ratings[i]) {
+        const rq = document.querySelectorAll('.rating-question')[i];
+        rq.querySelector('.error-msg').classList.add('show');
+        if (!firstError) firstError = rq;
+        hasError = true;
+      }
+    }
+    // 만족 내용
+    const satisfiedChecked = document.querySelector('input[name="satisfied"]:checked');
+    if (!satisfiedChecked) showError(document.querySelector('input[name="satisfied"]'));
+    else if (satisfiedChecked.value === '4' && !document.getElementById('satisfied_etc_text').value.trim()) {
+      showError(document.querySelector('input[name="satisfied"]'));
+    }
+    // 개선점 - 3개 모두 선택되어야 함
+    ['imp_edu_yn', 'imp_facility_yn', 'imp_etc_yn'].forEach(name => {
+      const checked = document.querySelector(`input[name="${name}"]:checked`);
+      if (!checked) {
+        const err = document.getElementById('improvementError');
+        err.classList.add('show');
+        if (!firstError) firstError = err.closest('.question');
+        hasError = true;
+      } else if (checked.value === '2') {
+        const textId = name.replace('_yn', '_text');
+        if (!document.getElementById(textId).value.trim()) {
+          const err = document.getElementById('improvementError');
+          err.classList.add('show');
+          if (!firstError) firstError = err.closest('.question');
+          hasError = true;
+        }
+      }
+    });
+
+    if (hasError) {
+      firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    // 데이터 수집
+    const bizExpVal = bizExpChecked.value;
+    const hasBizCareer = ['1','2','3','4','5'].includes(bizExpVal);
+    const satisfiedVal = satisfiedChecked.value;
+    const impEdu = document.querySelector('input[name="imp_edu_yn"]:checked').value;
+    const impFacility = document.querySelector('input[name="imp_facility_yn"]:checked').value;
+    const impEtc = document.querySelector('input[name="imp_etc_yn"]:checked').value;
+
+    // 사업용 운전경력 → 개월수 환산
+    const bizTotalMonths = hasBizCareer 
+      ? (parseInt(document.getElementById('bizYear').value || '0') * 12 
+         + parseInt(document.getElementById('bizMonth').value || '0'))
+      : '';
+    
+    // 자가용 운전경력 → 개월수 환산
+    const privTotalMonths = parseInt(document.getElementById('privYear').value || '0') * 12 
+                          + parseInt(document.getElementById('privMonth').value || '0');
+
+    // 만족내용 텍스트 변환
+    const satisfiedMap = {'1': '체험교육', '2': '교수진', '3': '시설', '4': '기타'};
+    let satisfiedText = satisfiedMap[satisfiedVal];
+    if (satisfiedVal === '4') {
+      satisfiedText = document.getElementById('satisfied_etc_text').value.trim();
+    }
+
+    const data = {
+      timestamp: new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' }),
+      courseName: document.getElementById('courseName').value.trim(),
+      eduDate: document.getElementById('eduDate').value,
+      age: document.getElementById('age').value,
+      gender: document.querySelector('input[name="gender"]:checked').value,
+      bizExp: bizExpVal,
+      bizMonths: bizTotalMonths,
+      privMonths: privTotalMonths,
+      transfer: document.querySelector('input[name="transfer"]:checked').value,
+      satisfiedText: satisfiedText,
+      imp_edu_yn: impEdu,
+      imp_edu_text: impEdu === '2' ? document.getElementById('imp_edu_text').value.trim() : '',
+      imp_facility_yn: impFacility,
+      imp_facility_text: impFacility === '2' ? document.getElementById('imp_facility_text').value.trim() : '',
+      imp_etc_yn: impEtc,
+      imp_etc_text: impEtc === '2' ? document.getElementById('imp_etc_text').value.trim() : ''
+    };
+    for (let i = 0; i < 10; i++) data['rating' + (i+1)] = ratings[i];
+
+    // 구글시트 전송
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.textContent = '제출 중...';
+
+    const SHEET_URL = 'https://script.google.com/macros/s/AKfycbwkhAQkLibwWOq30YiTxXTdPa1j6BK6jDK0yWVYqzmUQ_o0zKRO1mFEMd-3xMuBPVb1/exec';
+    
+    fetch(SHEET_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(data)
+    })
+    .then(() => {
+      document.getElementById('surveyForm').style.display = 'none';
+      document.getElementById('completeScreen').classList.add('show');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    })
+    .catch(() => {
+      // no-cors에서는 에러가 거의 안 나지만 혹시 몰라서
+      document.getElementById('surveyForm').style.display = 'none';
+      document.getElementById('completeScreen').classList.add('show');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+
+  // 오늘 날짜 기본값
+  document.getElementById('eduDate').valueAsDate = new Date();
+</script>
+</body>
+</html>
