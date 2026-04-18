@@ -39,24 +39,30 @@ textarea{width:100%;padding:14px 16px;border:1.5px solid #e2e8f0;border-radius:8
 .exp-row label{font-size:15px;color:#4a5568;white-space:nowrap;font-weight:600}
 .exp-row input{flex:1;min-width:0;text-align:center}
 .exp-title{font-size:14px;font-weight:600;color:#2d3748;margin-bottom:10px}
+
+/* 평가 슬라이더 */
 .rating-question{padding:20px 16px;background:#f7fafc;border-radius:10px;margin-bottom:16px}
-.rating-label{font-size:16px;font-weight:600;color:#2d3748;margin-bottom:20px;line-height:1.55}
-.slider-score-display{text-align:center;margin-bottom:18px;height:64px;display:flex;align-items:center;justify-content:center}
-.slider-score{font-size:54px;font-weight:900;background:linear-gradient(135deg,#ff8c00,#003d82);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;line-height:1;letter-spacing:-2px}
-.slider-score.empty{font-size:17px;color:#a0aec0;-webkit-text-fill-color:#a0aec0;background:none;font-weight:600}
-.score-unit{font-size:24px;font-weight:700;color:#003d82;-webkit-text-fill-color:#003d82;background:none}
-.slider-wrap{position:relative;margin:8px 0 16px}
-.slider-track-bg{width:100%;height:10px;border-radius:10px;background:linear-gradient(to right,#fc8181 0%,#fbd38d 30%,#f6e05e 50%,#68d391 75%,#0056b3 100%);position:relative}
-.score-slider{-webkit-appearance:none;appearance:none;width:100%;height:36px;border-radius:10px;background:transparent;outline:none;cursor:pointer;position:absolute;top:50%;transform:translateY(-50%);left:0;margin:0;opacity:0;z-index:5}
-.score-slider::-webkit-slider-thumb{-webkit-appearance:none;width:1px;height:1px;background:transparent;border:none;cursor:pointer}
-.score-slider::-moz-range-thumb{width:1px;height:1px;background:transparent;border:none;cursor:pointer;opacity:0}
-.face-handle{position:absolute;top:50%;transform:translate(-50%,-50%);width:52px;height:52px;pointer-events:none;z-index:10}
-.face-handle img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 3px 6px rgba(0,0,0,0.2))}
-.slider-ticks{display:flex;justify-content:space-between;padding:0 10px;margin-top:-6px;margin-bottom:8px}
-.slider-ticks span{font-size:12px;color:#a0aec0;font-weight:600}
-.rating-legend{display:flex;justify-content:space-between;font-size:14px;font-weight:700;padding:0 4px;margin-top:4px}
+.rating-label{font-size:16px;font-weight:600;color:#2d3748;margin-bottom:16px;line-height:1.55}
+.face-score-row{display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:16px;min-height:68px}
+.face-img{width:64px;height:64px;object-fit:contain;filter:drop-shadow(0 3px 8px rgba(0,0,0,0.2));display:none}
+.score-display{font-size:52px;font-weight:900;background:linear-gradient(135deg,#ff8c00,#003d82);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;line-height:1;letter-spacing:-2px}
+.score-display.empty{font-size:16px;color:#a0aec0;-webkit-text-fill-color:#a0aec0;background:none;font-weight:600}
+.score-unit{font-size:22px;font-weight:700;color:#003d82;-webkit-text-fill-color:#003d82;background:none}
+
+/* 슬라이더 트랙 */
+.slider-area{position:relative;padding:16px 0 8px}
+.track-bg{height:12px;border-radius:12px;background:linear-gradient(to right,#fc8181 0%,#fbd38d 30%,#f6e05e 50%,#68d391 75%,#0056b3 100%);position:relative;pointer-events:none}
+.native-slider{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;cursor:pointer;margin:0;padding:0;-webkit-appearance:none;appearance:none;touch-action:none}
+.native-slider::-webkit-slider-thumb{-webkit-appearance:none;width:44px;height:44px}
+.native-slider::-moz-range-thumb{width:44px;height:44px;opacity:0}
+.thumb-face{position:absolute;top:50%;transform:translate(-50%,-50%);width:52px;height:52px;pointer-events:none;z-index:5;transition:left .03s linear}
+.thumb-face img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 3px 8px rgba(0,0,0,0.25))}
+.slider-ticks{display:flex;justify-content:space-between;padding:0 2px;margin-top:6px}
+.slider-ticks span{font-size:13px;color:#718096;font-weight:600}
+.rating-legend{display:flex;justify-content:space-between;font-size:13px;font-weight:700;margin-top:6px}
 .rating-legend .low{color:#e53e3e}
 .rating-legend .high{color:#0056b3}
+
 .imp-cat{padding:18px 16px;background:#f7fafc;border-radius:10px;margin-bottom:14px}
 .imp-cat:last-child{margin-bottom:0}
 .imp-cat-title{font-size:16px;font-weight:700;color:#003d82;margin-bottom:12px}
@@ -66,7 +72,7 @@ textarea{width:100%;padding:14px 16px;border:1.5px solid #e2e8f0;border-radius:8
 .etc-box.show{display:block}
 .error-msg{color:#e53e3e;font-size:14px;margin-top:8px;display:none;font-weight:600}
 .error-msg.show{display:block}
-.submit-btn{width:100%;padding:20px;background:linear-gradient(135deg,#003d82,#0056b3);color:white;border:none;border-radius:12px;font-size:18px;font-weight:700;cursor:pointer;margin-top:24px;box-shadow:0 4px 14px rgba(0,61,130,0.3);-webkit-appearance:none}
+.submit-btn{width:100%;padding:20px;background:linear-gradient(135deg,#003d82,#0056b3);color:white;border:none;border-radius:12px;font-size:18px;font-weight:700;cursor:pointer;margin-top:24px;box-shadow:0 4px 14px rgba(0,61,130,0.3);-webkit-appearance:none;touch-action:manipulation}
 .submit-btn:disabled{background:#a0aec0;cursor:not-allowed;box-shadow:none}
 .debug-box{margin-top:16px;padding:14px;background:#fff3cd;border-radius:8px;font-size:14px;color:#856404;display:none;word-break:break-all;line-height:1.6}
 .complete-screen{display:none;text-align:center;padding:60px 20px;background:white;border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,0.06);margin-top:40px}
@@ -76,7 +82,7 @@ textarea{width:100%;padding:14px 16px;border:1.5px solid #e2e8f0;border-radius:8
 .complete-screen p{color:#4a5568;font-size:16px;line-height:1.7}
 .progress-bar{position:sticky;top:0;height:4px;background:#e2e8f0;z-index:100;margin:0 -16px}
 .progress-fill{height:100%;background:linear-gradient(90deg,#ff8c00,#003d82);width:0%;transition:width .3s}
-@media(max-width:400px){.ts-logo{font-size:68px;letter-spacing:-1px}.header h1{font-size:24px;padding-left:24px;padding-right:24px}.center-name{font-size:17px}.slider-score{font-size:48px}.radio-label{font-size:15px}.rating-legend{font-size:13px}}
+@media(max-width:400px){.ts-logo{font-size:68px;letter-spacing:-1px}.header h1{font-size:24px;padding-left:24px;padding-right:24px}.center-name{font-size:17px}.radio-label{font-size:15px}}
 </style>
 </head>
 <body>
@@ -241,35 +247,41 @@ window.addEventListener('DOMContentLoaded', function() {
 
   var SHEET_URL = 'https://script.google.com/macros/s/AKfycbwkhAQkLibwWOq30YiTxXTdPa1j6BK6jDK0yWVYqzmUQ_o0zKRO1mFEMd-3xMuBPVb1/exec';
   var BASE = 'https://ddyeonai.github.io/ts-survey/';
-  var FACE_SAD     = BASE + 'sad.png';
-  var FACE_NEUTRAL = BASE + 'neutral.png';
-  var FACE_HAPPY   = BASE + 'happy.png';
-
-  function getFaceUrl(val) {
-    val = parseInt(val);
-    if (val <= 3) return FACE_SAD;
-    if (val <= 6) return FACE_NEUTRAL;
-    return FACE_HAPPY;
-  }
-
-  function updateFacePos(idx) {
-    var sl = document.getElementById('sl'+idx);
-    var fh = document.getElementById('fh'+idx);
-    var fi = document.getElementById('fi'+idx);
-    var min = parseInt(sl.min), max = parseInt(sl.max), val = parseInt(sl.value);
-    var pct = (val - min) / (max - min);
-    var trackW = sl.offsetWidth;
-    // 브라우저마다 thumb 크기 보정 없이 순수 % 기반으로 위치 계산
-    fh.style.left = (pct * trackW) + 'px';
-    fi.src = getFaceUrl(val);
-  }
+  var FACES = { sad: BASE+'sad.png', neutral: BASE+'neutral.png', happy: BASE+'happy.png' };
   var ratings = {};
 
-  // 오늘 날짜 기본값
   var t = new Date();
   document.getElementById('eduDate').value = t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0');
 
-  // 슬라이더 생성
+  function getFace(v){ return v<=3?FACES.sad:v<=6?FACES.neutral:FACES.happy; }
+
+  function updateRating(idx, val) {
+    val = Math.round(val);
+    if (val < 1) val = 1;
+    if (val > 10) val = 10;
+    ratings[idx] = String(val);
+
+    // 점수 표시
+    var sc = document.getElementById('sc'+idx);
+    sc.classList.remove('empty');
+    sc.innerHTML = val+'<span class="score-unit">점</span>';
+
+    // 얼굴 표시
+    var fi = document.getElementById('fi'+idx);
+    fi.style.display = 'block';
+    fi.src = getFace(val);
+
+    // thumb 위치 계산
+    var sl = document.getElementById('sl'+idx);
+    var track = document.getElementById('tk'+idx);
+    var thumb = document.getElementById('th'+idx);
+    var pct = (val-1)/9;
+    var tw = track.offsetWidth;
+    thumb.style.left = (pct * tw) + 'px';
+
+    document.getElementById('err-r'+idx).classList.remove('show');
+  }
+
   var qs = [
     '교통안전체험교육센터의 서비스는 나의 이용 목적에 부합한다.',
     '교통안전체험교육센터는 국가나 사회의 미래가치 창출을 위한 업무를 수행하고 있다.',
@@ -290,42 +302,54 @@ window.addEventListener('DOMContentLoaded', function() {
     d.id = 'rq'+i;
     d.innerHTML =
       '<div class="rating-label">'+(i+1)+'. '+q+'<span class="required">*</span></div>'+
-      '<div class="slider-score-display"><span class="slider-score empty" id="sc'+i+'">슬라이더를 움직여 주세요</span></div>'+
-      '<div class="slider-wrap" id="sw'+i+'" style="height:52px;display:flex;align-items:center;">'+
-        '<div class="slider-track-bg" style="position:relative;flex:1;">'+
-          '<input type="range" class="score-slider" id="sl'+i+'" min="1" max="10" step="1" value="5">'+
-          '<div class="face-handle" id="fh'+i+'"><img id="fi'+i+'" src="'+FACE_NEUTRAL+'" alt="face"></div>'+
+      '<div class="face-score-row">'+
+        '<span class="score-display empty" id="sc'+i+'">슬라이더를 움직여 주세요</span>'+
+        '<img class="face-img" id="fi'+i+'" src="" alt="">'+
+      '</div>'+
+      '<div class="slider-area">'+
+        '<div class="track-bg" id="tk'+i+'">'+
+          '<div class="thumb-face" id="th'+i+'" style="left:50%"><img src="'+FACES.neutral+'" alt=""></div>'+
+          '<input type="range" class="native-slider" id="sl'+i+'" min="1" max="10" step="1" value="5">'+
         '</div>'+
       '</div>'+
       '<div class="slider-ticks"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span></div>'+
       '<div class="rating-legend"><span class="low">◀ 매우 불만족</span><span class="high">매우 만족 ▶</span></div>'+
       '<div class="error-msg" id="err-r'+i+'">점수를 선택해 주세요</div>';
     rc.appendChild(d);
-    var sl = document.getElementById('sl'+i);
-    updateFacePos(i);
 
-    function onSliderChange(idx, val) {
-      ratings[idx] = val;
-      var s = document.getElementById('sc'+idx);
-      s.classList.remove('empty');
-      s.innerHTML = val+'<span class="score-unit">점</span>';
-      document.getElementById('err-r'+idx).classList.remove('show');
-      updateFacePos(idx);
+    var sl = document.getElementById('sl'+i);
+
+    // ── 핵심: 터치 좌표로 값 직접 계산 (iOS Safari 완벽 대응) ──
+    function calcValFromTouch(clientX) {
+      var track = document.getElementById('tk'+i);
+      var rect = track.getBoundingClientRect();
+      var pct = Math.min(Math.max((clientX - rect.left) / rect.width, 0), 1);
+      return Math.round(1 + pct * 9);
     }
 
+    // PC/Android: input 이벤트
     sl.addEventListener('input', function() {
-      onSliderChange(i, this.value);
+      updateRating(i, parseInt(this.value));
     });
-    // 모바일 터치 지원
-    sl.addEventListener('touchstart', function() {
-      onSliderChange(i, this.value);
-    }, {passive: true});
-    sl.addEventListener('touchmove', function() {
-      onSliderChange(i, this.value);
-    }, {passive: true});
-    sl.addEventListener('touchend', function() {
-      onSliderChange(i, this.value);
-    }, {passive: true});
+
+    // iOS Safari: touchmove로 직접 계산
+    sl.addEventListener('touchstart', function(e) {
+      var val = calcValFromTouch(e.touches[0].clientX);
+      sl.value = val;
+      updateRating(i, val);
+    }, {passive:true});
+
+    sl.addEventListener('touchmove', function(e) {
+      var val = calcValFromTouch(e.touches[0].clientX);
+      sl.value = val;
+      updateRating(i, val);
+    }, {passive:true});
+
+    sl.addEventListener('touchend', function(e) {
+      var val = calcValFromTouch(e.changedTouches[0].clientX);
+      sl.value = val;
+      updateRating(i, val);
+    }, {passive:true});
   });
 
   // 라디오 스타일
@@ -338,25 +362,22 @@ window.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  // 사업용 경험 토글
   document.querySelectorAll('input[name="bizExp"]').forEach(function(r) {
     r.addEventListener('change', function() {
-      document.getElementById('bizCareerBox').classList.toggle('show', ['1','2','3','4','5'].indexOf(this.value) > -1);
+      document.getElementById('bizCareerBox').classList.toggle('show', ['1','2','3','4','5'].indexOf(this.value)>-1);
     });
   });
 
-  // 만족내용 기타 토글
   document.querySelectorAll('input[name="satisfied"]').forEach(function(r) {
     r.addEventListener('change', function() {
-      document.getElementById('satisfiedEtcBox').classList.toggle('show', this.value === '기타');
+      document.getElementById('satisfiedEtcBox').classList.toggle('show', this.value==='기타');
     });
   });
 
-  // 개선점 토글
   ['imp_edu','imp_facility','imp_etc'].forEach(function(n) {
     document.querySelectorAll('input[name="'+n+'"]').forEach(function(r) {
       r.addEventListener('change', function() {
-        document.getElementById(n+'_box').classList.toggle('show', this.value === '2');
+        document.getElementById(n+'_box').classList.toggle('show', this.value==='2');
       });
     });
   });
@@ -370,7 +391,7 @@ window.addEventListener('DOMContentLoaded', function() {
     var hasError = false, firstEl = null;
     function markErr(errId, focusId) {
       document.getElementById(errId).classList.add('show');
-      if (!firstEl) firstEl = document.getElementById(focusId || errId);
+      if (!firstEl) firstEl = document.getElementById(focusId||errId);
       hasError = true;
     }
 
@@ -381,7 +402,7 @@ window.addEventListener('DOMContentLoaded', function() {
     var bizCk = document.querySelector('input[name="bizExp"]:checked');
     if (!bizCk) {
       markErr('err-bizExp','err-bizExp');
-    } else if (['1','2','3','4','5'].indexOf(bizCk.value) > -1) {
+    } else if (['1','2','3','4','5'].indexOf(bizCk.value)>-1) {
       if (!document.getElementById('bizYear').value && !document.getElementById('bizMonth').value)
         markErr('err-bizExp','bizCareerBox');
     }
@@ -391,26 +412,26 @@ window.addEventListener('DOMContentLoaded', function() {
 
     if (!document.querySelector('input[name="transfer"]:checked')) markErr('err-transfer','err-transfer');
 
-    for (var i = 0; i < 10; i++) {
-      if (!ratings[i]) markErr('err-r'+i, 'rq'+i);
+    for (var i=0; i<10; i++) {
+      if (!ratings[i]) markErr('err-r'+i,'rq'+i);
     }
 
     var satCk = document.querySelector('input[name="satisfied"]:checked');
     if (!satCk) markErr('err-satisfied','err-satisfied');
-    else if (satCk.value === '기타' && !document.getElementById('satisfiedEtcText').value.trim())
+    else if (satCk.value==='기타' && !document.getElementById('satisfiedEtcText').value.trim())
       markErr('err-satisfied','satisfiedEtcText');
 
     var impErr = false;
     ['imp_edu','imp_facility','imp_etc'].forEach(function(n) {
       var ck = document.querySelector('input[name="'+n+'"]:checked');
-      if (!ck) { impErr = true; }
-      else if (ck.value === '2' && !document.getElementById(n+'_text').value.trim()) { impErr = true; }
+      if (!ck) { impErr=true; }
+      else if (ck.value==='2' && !document.getElementById(n+'_text').value.trim()) { impErr=true; }
     });
     if (impErr) markErr('err-improvement','err-improvement');
 
     if (hasError) {
       debug.textContent = '❌ 미입력 항목이 있어요. 빨간 항목을 확인해 주세요.';
-      if (firstEl) firstEl.scrollIntoView({behavior:'smooth', block:'center'});
+      if (firstEl) firstEl.scrollIntoView({behavior:'smooth',block:'center'});
       return;
     }
 
@@ -419,45 +440,38 @@ window.addEventListener('DOMContentLoaded', function() {
     btn.disabled = true;
     btn.textContent = '제출 중...';
 
-    // 데이터 수집
-    var hasBiz = ['1','2','3','4','5'].indexOf(bizCk.value) > -1;
-    var bizM = hasBiz ? (parseInt(document.getElementById('bizYear').value||'0')*12 + parseInt(document.getElementById('bizMonth').value||'0')) : '';
-    var privM = parseInt(document.getElementById('privYear').value||'0')*12 + parseInt(document.getElementById('privMonth').value||'0');
-    var satText = satCk.value === '기타' ? document.getElementById('satisfiedEtcText').value.trim() : satCk.value;
+    var hasBiz = ['1','2','3','4','5'].indexOf(bizCk.value)>-1;
+    var bizM = hasBiz?(parseInt(document.getElementById('bizYear').value||'0')*12+parseInt(document.getElementById('bizMonth').value||'0')):'';
+    var privM = parseInt(document.getElementById('privYear').value||'0')*12+parseInt(document.getElementById('privMonth').value||'0');
+    var satText = satCk.value==='기타'?document.getElementById('satisfiedEtcText').value.trim():satCk.value;
     var iEdu = document.querySelector('input[name="imp_edu"]:checked').value;
     var iFac = document.querySelector('input[name="imp_facility"]:checked').value;
     var iEtc = document.querySelector('input[name="imp_etc"]:checked').value;
 
-    // GET 방식으로 전송 (CORS 문제 없음)
     var params = new URLSearchParams({
       eduDate: document.getElementById('eduDate').value,
       age: document.getElementById('age').value,
       gender: document.querySelector('input[name="gender"]:checked').value,
-      bizExp: bizCk.value,
-      bizMonths: bizM,
-      privMonths: privM,
+      bizExp: bizCk.value, bizMonths: bizM, privMonths: privM,
       transfer: document.querySelector('input[name="transfer"]:checked').value,
-      r1: ratings[0], r2: ratings[1], r3: ratings[2], r4: ratings[3], r5: ratings[4],
-      r6: ratings[5], r7: ratings[6], r8: ratings[7], r9: ratings[8], r10: ratings[9],
+      r1:ratings[0],r2:ratings[1],r3:ratings[2],r4:ratings[3],r5:ratings[4],
+      r6:ratings[5],r7:ratings[6],r8:ratings[7],r9:ratings[8],r10:ratings[9],
       satisfiedText: satText,
-      imp_edu_yn: iEdu,
-      imp_edu_text: iEdu==='2' ? document.getElementById('imp_edu_text').value.trim() : '',
-      imp_facility_yn: iFac,
-      imp_facility_text: iFac==='2' ? document.getElementById('imp_facility_text').value.trim() : '',
-      imp_etc_yn: iEtc,
-      imp_etc_text: iEtc==='2' ? document.getElementById('imp_etc_text').value.trim() : ''
+      imp_edu_yn:iEdu, imp_edu_text:iEdu==='2'?document.getElementById('imp_edu_text').value.trim():'',
+      imp_facility_yn:iFac, imp_facility_text:iFac==='2'?document.getElementById('imp_facility_text').value.trim():'',
+      imp_etc_yn:iEtc, imp_etc_text:iEtc==='2'?document.getElementById('imp_etc_text').value.trim():''
     });
 
     var img = new Image();
     img.onload = img.onerror = function() {
-      document.getElementById('surveyForm').style.display = 'none';
+      document.getElementById('surveyForm').style.display='none';
       document.getElementById('completeScreen').classList.add('show');
-      window.scrollTo({top:0, behavior:'smooth'});
+      window.scrollTo({top:0,behavior:'smooth'});
     };
-    img.src = SHEET_URL + '?' + params.toString();
+    img.src = SHEET_URL+'?'+params.toString();
   });
 
-}); 
+});
 </script>
 </body>
 </html>
