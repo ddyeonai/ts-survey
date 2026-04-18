@@ -23,11 +23,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Malgun Gothic','Apple SD Goth
 .question:last-child{margin-bottom:0}
 .q-label{display:block;font-size:16px;font-weight:600;color:#2d3748;margin-bottom:12px;line-height:1.5}
 .required{color:#e53e3e;font-weight:700;margin-left:2px}
-input[type=text],input[type=number],input[type=date],textarea{width:100%;padding:14px 16px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:16px;font-family:inherit;background:white;color:#1a2332;transition:all .2s;-webkit-appearance:none;appearance:none}
+input[type=number],input[type=date]{width:100%;padding:14px 16px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:16px;font-family:inherit;background:white;color:#1a2332;-webkit-appearance:none;appearance:none}
 input:focus,textarea:focus{outline:none;border-color:#0056b3;box-shadow:0 0 0 3px rgba(0,86,179,0.1)}
-textarea{resize:vertical;min-height:100px;font-family:inherit}
+textarea{width:100%;padding:14px 16px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:16px;font-family:inherit;background:white;color:#1a2332;resize:vertical;min-height:100px}
 .radio-group{display:flex;flex-direction:column;gap:10px}
-.radio-item{display:flex;align-items:center;padding:14px 16px;border:1.5px solid #e2e8f0;border-radius:8px;cursor:pointer;background:white;transition:all .15s}
+.radio-item{display:flex;align-items:center;padding:14px 16px;border:1.5px solid #e2e8f0;border-radius:8px;cursor:pointer;background:white;transition:border-color .15s,background .15s}
 .radio-item input[type=radio]{width:20px;height:20px;margin-right:12px;accent-color:#0056b3;flex-shrink:0}
 .radio-item.checked{border-color:#0056b3;background:#eff6ff}
 .radio-label{font-size:16px;color:#2d3748;flex:1;font-weight:500}
@@ -87,7 +87,6 @@ textarea{resize:vertical;min-height:100px;font-family:inherit}
   <div id="surveyForm">
     <div class="intro-box">안녕하세요. 교통안전체험교육센터 교육에 참여해 주셔서 감사합니다.<br>더 나은 교육 서비스 제공을 위해 여러분의 소중한 의견을 들려주세요.</div>
 
-    <!-- 교육 정보 -->
     <div class="section">
       <div class="section-title"><span class="section-num">ⓘ</span>교육 정보</div>
       <div class="section-desc">교육 입소 일자를 선택해 주세요</div>
@@ -98,17 +97,14 @@ textarea{resize:vertical;min-height:100px;font-family:inherit}
       </div>
     </div>
 
-    <!-- 1. 기초조사 -->
     <div class="section">
       <div class="section-title"><span class="section-num">1</span>기초조사</div>
       <div class="section-desc">응답자에 관한 기본적인 사항입니다</div>
-
       <div class="question">
         <label class="q-label">연령<span class="required">*</span></label>
         <input type="number" id="age" min="20" max="100" placeholder="만 나이 입력">
         <div class="error-msg" id="err-age">연령을 입력해 주세요</div>
       </div>
-
       <div class="question">
         <label class="q-label">성별<span class="required">*</span></label>
         <div class="radio-row">
@@ -117,10 +113,9 @@ textarea{resize:vertical;min-height:100px;font-family:inherit}
         </div>
         <div class="error-msg" id="err-gender">성별을 선택해 주세요</div>
       </div>
-
       <div class="question">
         <label class="q-label">사업용 차량 운전경험<span class="required">*</span></label>
-        <div class="radio-group" id="bizExpGroup">
+        <div class="radio-group">
           <label class="radio-item"><input type="radio" name="bizExp" value="1"><span class="radio-label">1. 택시</span></label>
           <label class="radio-item"><input type="radio" name="bizExp" value="2"><span class="radio-label">2. 버스</span></label>
           <label class="radio-item"><input type="radio" name="bizExp" value="3"><span class="radio-label">3. 화물</span></label>
@@ -139,7 +134,6 @@ textarea{resize:vertical;min-height:100px;font-family:inherit}
           </div>
         </div>
       </div>
-
       <div class="question">
         <label class="q-label">자가용 운전경력<span class="required">*</span></label>
         <div class="exp-row">
@@ -152,7 +146,6 @@ textarea{resize:vertical;min-height:100px;font-family:inherit}
       </div>
     </div>
 
-    <!-- 2. 개인택시 양수 -->
     <div class="section">
       <div class="section-title"><span class="section-num">2</span>개인택시 양수 계획</div>
       <div class="section-desc">개인택시 양수와 관련된 질문입니다</div>
@@ -170,18 +163,15 @@ textarea{resize:vertical;min-height:100px;font-family:inherit}
       </div>
     </div>
 
-    <!-- 3. 교육 전반 평가 -->
     <div class="section">
       <div class="section-title"><span class="section-num">3</span>교육 전반 평가</div>
       <div class="section-desc">각 문항에 대해 1점(매우 불만족) ~ 10점(매우 만족)으로 평가해 주세요</div>
       <div id="ratingContainer"></div>
     </div>
 
-    <!-- 4. 의견 -->
     <div class="section">
       <div class="section-title"><span class="section-num">4</span>의견 및 개선사항</div>
       <div class="section-desc">소중한 의견을 들려주세요</div>
-
       <div class="question">
         <label class="q-label">교육과정 중 가장 만족스러운 내용은 무엇입니까?<span class="required">*</span></label>
         <div class="radio-group">
@@ -195,10 +185,8 @@ textarea{resize:vertical;min-height:100px;font-family:inherit}
           <textarea id="satisfiedEtcText" placeholder="기타 만족스러운 내용을 작성해 주세요"></textarea>
         </div>
       </div>
-
       <div class="question">
         <label class="q-label">개선점 및 불편사항<span class="required">*</span></label>
-
         <div class="imp-cat">
           <div class="imp-cat-title">① 교육 관련</div>
           <div class="radio-row">
@@ -209,7 +197,6 @@ textarea{resize:vertical;min-height:100px;font-family:inherit}
             <textarea id="imp_edu_text" placeholder="교육 관련 개선점을 작성해 주세요"></textarea>
           </div>
         </div>
-
         <div class="imp-cat">
           <div class="imp-cat-title">② 시설 관련</div>
           <div class="radio-row">
@@ -220,7 +207,6 @@ textarea{resize:vertical;min-height:100px;font-family:inherit}
             <textarea id="imp_facility_text" placeholder="시설 관련 개선점을 작성해 주세요"></textarea>
           </div>
         </div>
-
         <div class="imp-cat">
           <div class="imp-cat-title">③ 기타 의견</div>
           <div class="radio-row">
@@ -231,7 +217,6 @@ textarea{resize:vertical;min-height:100px;font-family:inherit}
             <textarea id="imp_etc_text" placeholder="기타 의견을 작성해 주세요"></textarea>
           </div>
         </div>
-
         <div class="error-msg" id="err-improvement">모든 항목을 선택해 주세요</div>
       </div>
     </div>
@@ -254,14 +239,11 @@ window.addEventListener('DOMContentLoaded', function() {
   var ratings = {};
 
   // 오늘 날짜 기본값
-  var today = new Date();
-  var yyyy = today.getFullYear();
-  var mm = String(today.getMonth()+1).padStart(2,'0');
-  var dd = String(today.getDate()).padStart(2,'0');
-  document.getElementById('eduDate').value = yyyy+'-'+mm+'-'+dd;
+  var t = new Date();
+  document.getElementById('eduDate').value = t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0');
 
-  // 10점 슬라이더 생성
-  var ratingQuestions = [
+  // 슬라이더 생성
+  var qs = [
     '교통안전체험교육센터의 서비스는 나의 이용 목적에 부합한다.',
     '교통안전체험교육센터는 국가나 사회의 미래가치 창출을 위한 업무를 수행하고 있다.',
     '교통안전체험교육센터의 교육이 타 공공기관 교육 대비 우수하다고 생각한다.',
@@ -274,44 +256,42 @@ window.addEventListener('DOMContentLoaded', function() {
     '교통안전체험교육센터의 교육 서비스는 전반적으로 만족스럽다.'
   ];
 
-  var container = document.getElementById('ratingContainer');
-  ratingQuestions.forEach(function(q, idx) {
-    var div = document.createElement('div');
-    div.className = 'rating-question';
-    div.id = 'rq-' + idx;
-    div.innerHTML =
-      '<div class="rating-label">' + (idx+1) + '. ' + q + '<span class="required">*</span></div>' +
-      '<div class="slider-score-display"><span class="slider-score empty" id="score-' + idx + '">슬라이더를 움직여 주세요</span></div>' +
-      '<input type="range" class="score-slider" id="slider-' + idx + '" min="1" max="10" step="1" value="5">' +
-      '<div class="slider-ticks"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span></div>' +
-      '<div class="rating-legend"><span class="low">◀ 매우 불만족</span><span class="high">매우 만족 ▶</span></div>' +
-      '<div class="error-msg" id="err-rating-' + idx + '">점수를 선택해 주세요</div>';
-    container.appendChild(div);
-
-    document.getElementById('slider-' + idx).addEventListener('input', function() {
-      ratings[idx] = this.value;
-      var disp = document.getElementById('score-' + idx);
-      disp.classList.remove('empty');
-      disp.innerHTML = this.value + '<span class="score-unit">점</span>';
-      document.getElementById('err-rating-' + idx).classList.remove('show');
+  var rc = document.getElementById('ratingContainer');
+  qs.forEach(function(q, i) {
+    var d = document.createElement('div');
+    d.className = 'rating-question';
+    d.id = 'rq'+i;
+    d.innerHTML =
+      '<div class="rating-label">'+(i+1)+'. '+q+'<span class="required">*</span></div>'+
+      '<div class="slider-score-display"><span class="slider-score empty" id="sc'+i+'">슬라이더를 움직여 주세요</span></div>'+
+      '<input type="range" class="score-slider" id="sl'+i+'" min="1" max="10" step="1" value="5">'+
+      '<div class="slider-ticks"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span></div>'+
+      '<div class="rating-legend"><span class="low">◀ 매우 불만족</span><span class="high">매우 만족 ▶</span></div>'+
+      '<div class="error-msg" id="err-r'+i+'">점수를 선택해 주세요</div>';
+    rc.appendChild(d);
+    document.getElementById('sl'+i).addEventListener('input', function() {
+      ratings[i] = this.value;
+      var s = document.getElementById('sc'+i);
+      s.classList.remove('empty');
+      s.innerHTML = this.value+'<span class="score-unit">점</span>';
+      document.getElementById('err-r'+i).classList.remove('show');
     });
   });
 
-  // 라디오 체크 스타일
+  // 라디오 스타일
   document.addEventListener('change', function(e) {
     if (e.target.type === 'radio') {
       var name = e.target.name;
-      document.querySelectorAll('input[name="' + name + '"]').forEach(function(r) {
+      document.querySelectorAll('input[name="'+name+'"]').forEach(function(r) {
         r.closest('.radio-item').classList.toggle('checked', r.checked);
       });
     }
   });
 
-  // 사업용 경험 → 경력 박스 토글
+  // 사업용 경험 토글
   document.querySelectorAll('input[name="bizExp"]').forEach(function(r) {
     r.addEventListener('change', function() {
-      var show = ['1','2','3','4','5'].indexOf(this.value) > -1;
-      document.getElementById('bizCareerBox').classList.toggle('show', show);
+      document.getElementById('bizCareerBox').classList.toggle('show', ['1','2','3','4','5'].indexOf(this.value) > -1);
     });
   });
 
@@ -323,10 +303,10 @@ window.addEventListener('DOMContentLoaded', function() {
   });
 
   // 개선점 토글
-  ['imp_edu','imp_facility','imp_etc'].forEach(function(name) {
-    document.querySelectorAll('input[name="' + name + '"]').forEach(function(r) {
+  ['imp_edu','imp_facility','imp_etc'].forEach(function(n) {
+    document.querySelectorAll('input[name="'+n+'"]').forEach(function(r) {
       r.addEventListener('change', function() {
-        document.getElementById(name + '_box').classList.toggle('show', this.value === '2');
+        document.getElementById(n+'_box').classList.toggle('show', this.value === '2');
       });
     });
   });
@@ -337,137 +317,97 @@ window.addEventListener('DOMContentLoaded', function() {
     debug.style.display = 'block';
     debug.textContent = '검사 중...';
 
-    var hasError = false;
-    var firstErrorEl = null;
-
-    function markError(errId, scrollEl) {
+    var hasError = false, firstEl = null;
+    function markErr(errId, focusId) {
       document.getElementById(errId).classList.add('show');
-      if (!firstErrorEl) firstErrorEl = scrollEl || document.getElementById(errId);
+      if (!firstEl) firstEl = document.getElementById(focusId || errId);
       hasError = true;
     }
 
-    // 날짜
-    if (!document.getElementById('eduDate').value)
-      markError('err-eduDate', document.getElementById('eduDate'));
+    if (!document.getElementById('eduDate').value) markErr('err-eduDate','eduDate');
+    if (!document.getElementById('age').value) markErr('err-age','age');
+    if (!document.querySelector('input[name="gender"]:checked')) markErr('err-gender','err-gender');
 
-    // 나이
-    if (!document.getElementById('age').value)
-      markError('err-age', document.getElementById('age'));
-
-    // 성별
-    if (!document.querySelector('input[name="gender"]:checked'))
-      markError('err-gender', document.querySelector('input[name="gender"]'));
-
-    // 사업용 경험
-    var bizChecked = document.querySelector('input[name="bizExp"]:checked');
-    if (!bizChecked) {
-      markError('err-bizExp', document.querySelector('input[name="bizExp"]'));
-    } else if (['1','2','3','4','5'].indexOf(bizChecked.value) > -1) {
-      var by = document.getElementById('bizYear').value;
-      var bm = document.getElementById('bizMonth').value;
-      if (by === '' && bm === '') markError('err-bizExp', document.getElementById('bizCareerBox'));
+    var bizCk = document.querySelector('input[name="bizExp"]:checked');
+    if (!bizCk) {
+      markErr('err-bizExp','err-bizExp');
+    } else if (['1','2','3','4','5'].indexOf(bizCk.value) > -1) {
+      if (!document.getElementById('bizYear').value && !document.getElementById('bizMonth').value)
+        markErr('err-bizExp','bizCareerBox');
     }
 
-    // 자가용 경력
-    var py = document.getElementById('privYear').value;
-    var pm = document.getElementById('privMonth').value;
-    if (py === '' && pm === '')
-      markError('err-privCareer', document.getElementById('privYear'));
+    if (!document.getElementById('privYear').value && !document.getElementById('privMonth').value)
+      markErr('err-privCareer','privYear');
 
-    // 양수계획
-    if (!document.querySelector('input[name="transfer"]:checked'))
-      markError('err-transfer', document.querySelector('input[name="transfer"]'));
+    if (!document.querySelector('input[name="transfer"]:checked')) markErr('err-transfer','err-transfer');
 
-    // 평점
     for (var i = 0; i < 10; i++) {
-      if (!ratings[i]) {
-        markError('err-rating-' + i, document.getElementById('rq-' + i));
-      }
+      if (!ratings[i]) markErr('err-r'+i, 'rq'+i);
     }
 
-    // 만족내용
-    var satChecked = document.querySelector('input[name="satisfied"]:checked');
-    if (!satChecked) {
-      markError('err-satisfied', document.querySelector('input[name="satisfied"]'));
-    } else if (satChecked.value === '기타' && !document.getElementById('satisfiedEtcText').value.trim()) {
-      markError('err-satisfied', document.getElementById('satisfiedEtcText'));
-    }
+    var satCk = document.querySelector('input[name="satisfied"]:checked');
+    if (!satCk) markErr('err-satisfied','err-satisfied');
+    else if (satCk.value === '기타' && !document.getElementById('satisfiedEtcText').value.trim())
+      markErr('err-satisfied','satisfiedEtcText');
 
-    // 개선점
-    var impNames = ['imp_edu','imp_facility','imp_etc'];
-    var impError = false;
-    impNames.forEach(function(name) {
-      var checked = document.querySelector('input[name="' + name + '"]:checked');
-      if (!checked) {
-        impError = true;
-      } else if (checked.value === '2') {
-        var txt = document.getElementById(name + '_text').value.trim();
-        if (!txt) impError = true;
-      }
+    var impErr = false;
+    ['imp_edu','imp_facility','imp_etc'].forEach(function(n) {
+      var ck = document.querySelector('input[name="'+n+'"]:checked');
+      if (!ck) { impErr = true; }
+      else if (ck.value === '2' && !document.getElementById(n+'_text').value.trim()) { impErr = true; }
     });
-    if (impError) markError('err-improvement', document.getElementById('err-improvement'));
+    if (impErr) markErr('err-improvement','err-improvement');
 
     if (hasError) {
-      debug.textContent = '❌ 미입력 항목이 있어요. 위의 빨간 항목을 확인해 주세요.';
-      if (firstErrorEl) firstErrorEl.scrollIntoView({behavior:'smooth', block:'center'});
+      debug.textContent = '❌ 미입력 항목이 있어요. 빨간 항목을 확인해 주세요.';
+      if (firstEl) firstEl.scrollIntoView({behavior:'smooth', block:'center'});
       return;
     }
 
-    debug.textContent = '✅ 검사 통과! 전송 중...';
-
+    debug.textContent = '✅ 전송 중...';
     var btn = document.getElementById('submitBtn');
     btn.disabled = true;
     btn.textContent = '제출 중...';
 
     // 데이터 수집
-    var hasBiz = ['1','2','3','4','5'].indexOf(bizChecked.value) > -1;
-    var bizMonths = hasBiz
-      ? (parseInt(document.getElementById('bizYear').value||'0')*12 + parseInt(document.getElementById('bizMonth').value||'0'))
-      : '';
-    var privMonths = parseInt(document.getElementById('privYear').value||'0')*12 + parseInt(document.getElementById('privMonth').value||'0');
+    var hasBiz = ['1','2','3','4','5'].indexOf(bizCk.value) > -1;
+    var bizM = hasBiz ? (parseInt(document.getElementById('bizYear').value||'0')*12 + parseInt(document.getElementById('bizMonth').value||'0')) : '';
+    var privM = parseInt(document.getElementById('privYear').value||'0')*12 + parseInt(document.getElementById('privMonth').value||'0');
+    var satText = satCk.value === '기타' ? document.getElementById('satisfiedEtcText').value.trim() : satCk.value;
+    var iEdu = document.querySelector('input[name="imp_edu"]:checked').value;
+    var iFac = document.querySelector('input[name="imp_facility"]:checked').value;
+    var iEtc = document.querySelector('input[name="imp_etc"]:checked').value;
 
-    var satVal = satChecked.value;
-    var satText = satVal === '기타' ? document.getElementById('satisfiedEtcText').value.trim() : satVal;
-
-    var impEdu = document.querySelector('input[name="imp_edu"]:checked').value;
-    var impFacility = document.querySelector('input[name="imp_facility"]:checked').value;
-    var impEtc = document.querySelector('input[name="imp_etc"]:checked').value;
-
-    var data = {
+    // GET 방식으로 전송 (CORS 문제 없음)
+    var params = new URLSearchParams({
       eduDate: document.getElementById('eduDate').value,
       age: document.getElementById('age').value,
       gender: document.querySelector('input[name="gender"]:checked').value,
-      bizExp: bizChecked.value,
-      bizMonths: bizMonths,
-      privMonths: privMonths,
+      bizExp: bizCk.value,
+      bizMonths: bizM,
+      privMonths: privM,
       transfer: document.querySelector('input[name="transfer"]:checked').value,
+      r1: ratings[0], r2: ratings[1], r3: ratings[2], r4: ratings[3], r5: ratings[4],
+      r6: ratings[5], r7: ratings[6], r8: ratings[7], r9: ratings[8], r10: ratings[9],
       satisfiedText: satText,
-      imp_edu_yn: impEdu,
-      imp_edu_text: impEdu === '2' ? document.getElementById('imp_edu_text').value.trim() : '',
-      imp_facility_yn: impFacility,
-      imp_facility_text: impFacility === '2' ? document.getElementById('imp_facility_text').value.trim() : '',
-      imp_etc_yn: impEtc,
-      imp_etc_text: impEtc === '2' ? document.getElementById('imp_etc_text').value.trim() : ''
-    };
-    for (var j = 0; j < 10; j++) data['rating'+(j+1)] = ratings[j];
+      imp_edu_yn: iEdu,
+      imp_edu_text: iEdu==='2' ? document.getElementById('imp_edu_text').value.trim() : '',
+      imp_facility_yn: iFac,
+      imp_facility_text: iFac==='2' ? document.getElementById('imp_facility_text').value.trim() : '',
+      imp_etc_yn: iEtc,
+      imp_etc_text: iEtc==='2' ? document.getElementById('imp_etc_text').value.trim() : ''
+    });
 
-    fetch(SHEET_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: {'Content-Type':'text/plain;charset=utf-8'},
-      body: JSON.stringify(data)
-    }).then(function() {
+    var img = new Image();
+    img.onload = img.onerror = function() {
       document.getElementById('surveyForm').style.display = 'none';
       document.getElementById('completeScreen').classList.add('show');
       window.scrollTo({top:0, behavior:'smooth'});
-    }).catch(function(err) {
-      debug.textContent = '❌ 전송 오류: ' + err.message;
-      btn.disabled = false;
-      btn.textContent = '설문 제출하기';
-    });
+    };
+    img.src = SHEET_URL + '?' + params.toString();
   });
 
-}); // DOMContentLoaded 끝
+}); 
 </script>
 </body>
 </html>
