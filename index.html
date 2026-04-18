@@ -45,12 +45,13 @@ textarea{width:100%;padding:14px 16px;border:1.5px solid #e2e8f0;border-radius:8
 .slider-score{font-size:54px;font-weight:900;background:linear-gradient(135deg,#ff8c00,#003d82);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;line-height:1;letter-spacing:-2px}
 .slider-score.empty{font-size:17px;color:#a0aec0;-webkit-text-fill-color:#a0aec0;background:none;font-weight:600}
 .score-unit{font-size:24px;font-weight:700;color:#003d82;-webkit-text-fill-color:#003d82;background:none}
-.slider-wrap{position:relative;padding:24px 0 16px;margin:0 8px}
-.score-slider{-webkit-appearance:none;appearance:none;width:100%;height:10px;border-radius:10px;background:linear-gradient(to right,#fc8181 0%,#fbd38d 30%,#f6e05e 50%,#68d391 75%,#0056b3 100%);outline:none;cursor:pointer;margin:0}
-.score-slider::-webkit-slider-thumb{-webkit-appearance:none;width:10px;height:10px;border-radius:50%;background:transparent;border:none;cursor:pointer}
-.score-slider::-moz-range-thumb{width:10px;height:10px;border-radius:50%;background:transparent;border:none;cursor:pointer}
-.face-handle{position:absolute;top:50%;transform:translate(-50%,-50%);width:52px;height:52px;pointer-events:none;transition:left .05s;z-index:10}
-.face-handle img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 3px 6px rgba(0,0,0,0.25))}
+.slider-wrap{position:relative;margin:8px 0 16px}
+.slider-track-bg{width:100%;height:10px;border-radius:10px;background:linear-gradient(to right,#fc8181 0%,#fbd38d 30%,#f6e05e 50%,#68d391 75%,#0056b3 100%);position:relative}
+.score-slider{-webkit-appearance:none;appearance:none;width:100%;height:10px;border-radius:10px;background:transparent;outline:none;cursor:pointer;position:absolute;top:0;left:0;margin:0}
+.score-slider::-webkit-slider-thumb{-webkit-appearance:none;width:1px;height:1px;background:transparent;border:none;cursor:pointer}
+.score-slider::-moz-range-thumb{width:1px;height:1px;background:transparent;border:none;cursor:pointer;opacity:0}
+.face-handle{position:absolute;top:50%;transform:translate(-50%,-50%);width:52px;height:52px;pointer-events:none;z-index:10}
+.face-handle img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 3px 6px rgba(0,0,0,0.2))}
 .slider-ticks{display:flex;justify-content:space-between;padding:0 10px;margin-top:-6px;margin-bottom:8px}
 .slider-ticks span{font-size:12px;color:#a0aec0;font-weight:600}
 .rating-legend{display:flex;justify-content:space-between;font-size:14px;font-weight:700;padding:0 4px;margin-top:4px}
@@ -238,6 +239,7 @@ textarea{width:100%;padding:14px 16px;border:1.5px solid #e2e8f0;border-radius:8
 <script>
 window.addEventListener('DOMContentLoaded', function() {
 
+  var SHEET_URL = 'https://script.google.com/macros/s/AKfycbwkhAQkLibwWOq30YiTxXTdPa1j6BK6jDK0yWVYqzmUQ_o0zKRO1mFEMd-3xMuBPVb1/exec';
   var BASE = 'https://ddyeonai.github.io/ts-survey/';
   var FACE_SAD     = BASE + 'sad.png';
   var FACE_NEUTRAL = BASE + 'neutral.png';
@@ -252,14 +254,13 @@ window.addEventListener('DOMContentLoaded', function() {
 
   function updateFacePos(idx) {
     var sl = document.getElementById('sl'+idx);
-    var wrap = document.getElementById('sw'+idx);
     var fh = document.getElementById('fh'+idx);
     var fi = document.getElementById('fi'+idx);
     var min = parseInt(sl.min), max = parseInt(sl.max), val = parseInt(sl.value);
     var pct = (val - min) / (max - min);
-    var wrapW = wrap.offsetWidth;
-    var thumbOffset = pct * wrapW;
-    fh.style.left = thumbOffset + 'px';
+    var trackW = sl.offsetWidth;
+    // 브라우저마다 thumb 크기 보정 없이 순수 % 기반으로 위치 계산
+    fh.style.left = (pct * trackW) + 'px';
     fi.src = getFaceUrl(val);
   }
   var ratings = {};
@@ -290,9 +291,11 @@ window.addEventListener('DOMContentLoaded', function() {
     d.innerHTML =
       '<div class="rating-label">'+(i+1)+'. '+q+'<span class="required">*</span></div>'+
       '<div class="slider-score-display"><span class="slider-score empty" id="sc'+i+'">슬라이더를 움직여 주세요</span></div>'+
-      '<div class="slider-wrap" id="sw'+i+'">'+
-        '<input type="range" class="score-slider" id="sl'+i+'" min="1" max="10" step="1" value="5">'+
-        '<div class="face-handle" id="fh'+i+'"><img id="fi'+i+'" src="'+FACE_NEUTRAL+'" alt="face"></div>'+
+      '<div class="slider-wrap" id="sw'+i+'" style="height:52px;display:flex;align-items:center;">'+
+        '<div class="slider-track-bg" style="position:relative;flex:1;">'+
+          '<input type="range" class="score-slider" id="sl'+i+'" min="1" max="10" step="1" value="5">'+
+          '<div class="face-handle" id="fh'+i+'"><img id="fi'+i+'" src="'+FACE_NEUTRAL+'" alt="face"></div>'+
+        '</div>'+
       '</div>'+
       '<div class="slider-ticks"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span></div>'+
       '<div class="rating-legend"><span class="low">◀ 매우 불만족</span><span class="high">매우 만족 ▶</span></div>'+
