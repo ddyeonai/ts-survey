@@ -326,24 +326,24 @@ window.addEventListener('DOMContentLoaded', function() {
         '</div>'+
       '</div>'+
       '<div class="slider-wrap">'+
-        '<input type="range" class="score-slider" id="sl'+i+'" min="1" max="10" step="1" value="1">'+
+        '<input type="range" class="score-slider" id="sl'+i+'" min="1" max="10" step="1" value="1" data-idx="'+i+'">'+
       '</div>'+
       '<div class="slider-ticks"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span></div>'+
       '<div class="rating-legend"><span class="low">◀ 매우 불만족</span><span class="high">매우 만족 ▶</span></div>'+
       '<div class="error-msg" id="err-r'+i+'">점수를 선택해 주세요</div>';
     rc.appendChild(d);
+  });
 
-    (function(idx) {
-      var sl = document.getElementById('sl'+idx);
-      // PC & Android
-      sl.addEventListener('input', function() {
-        onRate(idx, parseInt(this.value));
-      });
-      // iOS Safari 대응
-      sl.addEventListener('change', function() {
-        onRate(idx, parseInt(this.value));
-      });
-    })(i);
+  // 이벤트는 ratingContainer에 위임 (클로저 버그 완전 방지)
+  rc.addEventListener('input', function(e) {
+    if (e.target.classList.contains('score-slider')) {
+      onRate(parseInt(e.target.dataset.idx), parseInt(e.target.value));
+    }
+  });
+  rc.addEventListener('change', function(e) {
+    if (e.target.classList.contains('score-slider')) {
+      onRate(parseInt(e.target.dataset.idx), parseInt(e.target.value));
+    }
   });
 
   // 라디오 스타일
