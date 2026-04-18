@@ -255,30 +255,28 @@ window.addEventListener('DOMContentLoaded', function() {
 
   function getFace(v){ return v<=3?FACES.sad:v<=6?FACES.neutral:FACES.happy; }
 
-  function updateRating(idx, val) {
-    val = Math.round(val);
-    if (val < 1) val = 1;
-    if (val > 10) val = 10;
-    ratings[idx] = String(val);
+  // 슬라이더 thumb 이미지를 동적 style 태그로 적용 (가장 안정적인 방법)
+  function applyThumbImg(idx, val) {
+    var url = getFace(val);
+    var id = 'ts'+idx;
+    var el = document.getElementById(id);
+    if (!el) { el = document.createElement('style'); el.id = id; document.head.appendChild(el); }
+    el.textContent =
+      '#sl'+idx+'::-webkit-slider-thumb{background-image:url("'+url+'")!important}'+
+      '#sl'+idx+'::-moz-range-thumb{background-image:url("'+url+'")!important}';
+  }
 
-    // 점수 표시
+  function updateRating(idx, val) {
+    val = Math.min(10, Math.max(1, Math.round(val)));
+    ratings[idx] = String(val);
     var sc = document.getElementById('sc'+idx);
     sc.classList.remove('empty');
     sc.innerHTML = val+'<span class="score-unit">점</span>';
-
-    // 얼굴 표시
     var fi = document.getElementById('fi'+idx);
     fi.style.display = 'block';
     fi.src = getFace(val);
-
-    // thumb 위치 계산
-    var sl = document.getElementById('sl'+idx);
-    var track = document.getElementById('tk'+idx);
-    var thumb = document.getElementById('th'+idx);
-    var pct = (val-1)/9;
-    var tw = track.offsetWidth;
-    thumb.style.left = (pct * tw) + 'px';
-
+    document.getElementById('sl'+idx).value = val;
+    applyThumbImg(idx, val);
     document.getElementById('err-r'+idx).classList.remove('show');
   }
 
@@ -306,11 +304,8 @@ window.addEventListener('DOMContentLoaded', function() {
         '<span class="score-display empty" id="sc'+i+'">슬라이더를 움직여 주세요</span>'+
         '<img class="face-img" id="fi'+i+'" src="" alt="">'+
       '</div>'+
-      '<div class="slider-area">'+
-        '<div class="track-bg" id="tk'+i+'">'+
-          '<div class="thumb-face" id="th'+i+'" style="left:50%"><img src="'+FACES.neutral+'" alt=""></div>'+
-          '<input type="range" class="native-slider" id="sl'+i+'" min="1" max="10" step="1" value="5">'+
-        '</div>'+
+      '<div class="slider-wrap">'+
+        '<input type="range" class="score-slider" id="sl'+i+'" min="1" max="10" step="1" value="5">'+
       '</div>'+
       '<div class="slider-ticks"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span></div>'+
       '<div class="rating-legend"><span class="low">◀ 매우 불만족</span><span class="high">매우 만족 ▶</span></div>'+
@@ -319,37 +314,20 @@ window.addEventListener('DOMContentLoaded', function() {
 
     var sl = document.getElementById('sl'+i);
 
-    // ── 핵심: 터치 좌표로 값 직접 계산 (iOS Safari 완벽 대응) ──
-    function calcValFromTouch(clientX) {
-      var track = document.getElementById('tk'+i);
-      var rect = track.getBoundingClientRect();
+    function calcFromTouch(clientX) {
+      var rect = sl.getBoundingClientRect();
       var pct = Math.min(Math.max((clientX - rect.left) / rect.width, 0), 1);
       return Math.round(1 + pct * 9);
     }
 
-    // PC/Android: input 이벤트
-    sl.addEventListener('input', function() {
-      updateRating(i, parseInt(this.value));
-    });
+    // PC
+    sl.addEventListener('input', function(){ updateRating(i, parseInt(this.value)); });
+    sl.addEventListener('change', function(){ updateRating(i, parseInt(this.value)); });
 
-    // iOS Safari: touchmove로 직접 계산
-    sl.addEventListener('touchstart', function(e) {
-      var val = calcValFromTouch(e.touches[0].clientX);
-      sl.value = val;
-      updateRating(i, val);
-    }, {passive:true});
-
-    sl.addEventListener('touchmove', function(e) {
-      var val = calcValFromTouch(e.touches[0].clientX);
-      sl.value = val;
-      updateRating(i, val);
-    }, {passive:true});
-
-    sl.addEventListener('touchend', function(e) {
-      var val = calcValFromTouch(e.changedTouches[0].clientX);
-      sl.value = val;
-      updateRating(i, val);
-    }, {passive:true});
+    // 모바일
+    sl.addEventListener('touchstart', function(e){ updateRating(i, calcFromTouch(e.touches[0].clientX)); }, {passive:true});
+    sl.addEventListener('touchmove',  function(e){ updateRating(i, calcFromTouch(e.touches[0].clientX)); }, {passive:true});
+    sl.addEventListener('touchend',   function(e){ updateRating(i, calcFromTouch(e.changedTouches[0].clientX)); }, {passive:true});
   });
 
   // 라디오 스타일
