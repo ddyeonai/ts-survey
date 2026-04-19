@@ -39,57 +39,21 @@ textarea{width:100%;padding:14px 16px;border:1.5px solid #e2e8f0;border-radius:8
 .exp-row label{font-size:15px;color:#4a5568;white-space:nowrap;font-weight:600}
 .exp-row input{flex:1;min-width:0;text-align:center}
 .exp-title{font-size:14px;font-weight:600;color:#2d3748;margin-bottom:10px}
-
-/* ── 평가 슬라이더 ── */
 .rating-question{padding:20px 16px;background:#f7fafc;border-radius:10px;margin-bottom:16px}
 .rating-label{font-size:16px;font-weight:600;color:#2d3748;margin-bottom:14px;line-height:1.55}
-
-/* 캐릭터 + 점수 표시 */
-.rating-display{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:16px;min-height:72px}
-.rating-face{width:68px;height:68px;object-fit:contain;filter:drop-shadow(0 3px 8px rgba(0,0,0,0.2));transition:src .1s}
-.rating-face.hidden{display:none}
-.rating-score{font-size:56px;font-weight:900;line-height:1;letter-spacing:-2px;background:linear-gradient(135deg,#ff8c00,#003d82);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-.rating-score .unit{font-size:22px;font-weight:700;color:#003d82;-webkit-text-fill-color:#003d82;background:none}
+.rating-display{text-align:center;margin-bottom:14px;min-height:60px;display:flex;align-items:center;justify-content:center}
 .rating-hint{font-size:15px;color:#a0aec0;font-weight:500}
-
-/* 슬라이더 트랙: 무지개 배경 유지 */
-.slider-wrap{margin:4px 0 10px;padding:8px 0}
-.score-slider{
-  -webkit-appearance:none;
-  appearance:none;
-  width:100%;
-  height:12px;
-  border-radius:12px;
-  background:linear-gradient(to right,#fc8181 0%,#fbd38d 30%,#f6e05e 50%,#68d391 75%,#0056b3 100%);
-  outline:none;
-  cursor:pointer;
-  display:block;
-}
-/* thumb: 기본 동그라미 스타일만, 이미지 X */
-.score-slider::-webkit-slider-thumb{
-  -webkit-appearance:none;
-  width:36px;height:36px;
-  border-radius:50%;
-  background:white;
-  border:4px solid #003d82;
-  box-shadow:0 2px 8px rgba(0,61,130,0.3);
-  cursor:pointer;
-}
-.score-slider::-moz-range-thumb{
-  width:36px;height:36px;
-  border-radius:50%;
-  background:white;
-  border:4px solid #003d82;
-  box-shadow:0 2px 8px rgba(0,61,130,0.3);
-  cursor:pointer;
-}
-
+.rating-score{font-size:52px;font-weight:900;line-height:1;letter-spacing:-2px;background:linear-gradient(135deg,#ff8c00,#003d82);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;display:none}
+.rating-score .unit{font-size:22px;font-weight:700;color:#003d82;-webkit-text-fill-color:#003d82;background:none}
+.slider-wrap{margin:4px 0 10px;padding:12px 0}
+.score-slider{-webkit-appearance:none;appearance:none;width:100%;height:12px;border-radius:12px;background:linear-gradient(to right,#fc8181 0%,#fbd38d 30%,#f6e05e 50%,#68d391 75%,#0056b3 100%);outline:none;cursor:pointer;display:block}
+.score-slider::-webkit-slider-thumb{-webkit-appearance:none;width:56px;height:56px;border-radius:50%;background:white center/contain no-repeat;border:none;cursor:pointer;box-shadow:0 3px 8px rgba(0,0,0,0.25);margin-top:-22px}
+.score-slider::-moz-range-thumb{width:56px;height:56px;border-radius:50%;background:white center/contain no-repeat;border:none;cursor:pointer;box-shadow:0 3px 8px rgba(0,0,0,0.25)}
 .slider-ticks{display:flex;justify-content:space-between;padding:0 2px;margin-top:4px}
 .slider-ticks span{font-size:13px;color:#718096;font-weight:600}
 .rating-legend{display:flex;justify-content:space-between;font-size:13px;font-weight:700;margin-top:6px}
 .rating-legend .low{color:#e53e3e}
 .rating-legend .high{color:#0056b3}
-
 .imp-cat{padding:18px 16px;background:#f7fafc;border-radius:10px;margin-bottom:14px}
 .imp-cat:last-child{margin-bottom:0}
 .imp-cat-title{font-size:16px;font-weight:700;color:#003d82;margin-bottom:12px}
@@ -276,28 +240,43 @@ window.addEventListener('DOMContentLoaded', function() {
   var BASE = 'https://ddyeonai.github.io/ts-survey/';
   var ratings = {};
 
-  function getFace(v) {
+  // 점수에 따라 이미지 URL 반환
+  function getFaceUrl(v) {
     return v <= 3 ? BASE+'sad.png' : v <= 6 ? BASE+'neutral.png' : BASE+'happy.png';
   }
 
-  // 슬라이더 값 변경 시 화면 업데이트
+  // 슬라이더 thumb 이미지를 동적 style 태그로 교체
+  function setThumbImg(idx, val) {
+    var url = getFaceUrl(val);
+    var styleId = 'thumb-style-'+idx;
+    var el = document.getElementById(styleId);
+    if (!el) {
+      el = document.createElement('style');
+      el.id = styleId;
+      document.head.appendChild(el);
+    }
+    el.textContent =
+      '#sl'+idx+'::-webkit-slider-thumb{background-image:url("'+url+'")!important}'+
+      '#sl'+idx+'::-moz-range-thumb{background-image:url("'+url+'")!important}';
+  }
+
+  // 슬라이더 값 변경 처리
   function onRate(idx, val) {
     val = Math.min(10, Math.max(1, val));
     ratings[idx] = String(val);
-    // 점수
-    var sc = document.getElementById('sc'+idx);
-    sc.innerHTML = val + '<span class="unit">점</span>';
+    // 점수 표시
+    var hint = document.getElementById('hint'+idx);
+    var sc   = document.getElementById('sc'+idx);
+    hint.style.display = 'none';
     sc.style.display = 'block';
-    // 캐릭터
-    var fi = document.getElementById('fi'+idx);
-    fi.src = getFace(val);
-    fi.classList.remove('hidden');
-    // 힌트 숨김
-    document.getElementById('hint'+idx).style.display = 'none';
-    // 에러 숨김
+    sc.innerHTML = val + '<span class="unit">점</span>';
+    // thumb 이미지 변경
+    setThumbImg(idx, val);
+    // 에러 제거
     document.getElementById('err-r'+idx).classList.remove('show');
   }
 
+  // 슬라이더 문항 생성
   var qs = [
     '교통안전체험교육센터의 서비스는 나의 이용 목적에 부합한다.',
     '교통안전체험교육센터는 국가나 사회의 미래가치 창출을 위한 업무를 수행하고 있다.',
@@ -312,6 +291,7 @@ window.addEventListener('DOMContentLoaded', function() {
   ];
 
   var rc = document.getElementById('ratingContainer');
+
   qs.forEach(function(q, i) {
     var d = document.createElement('div');
     d.className = 'rating-question';
@@ -319,11 +299,8 @@ window.addEventListener('DOMContentLoaded', function() {
     d.innerHTML =
       '<div class="rating-label">'+(i+1)+'. '+q+'<span class="required">*</span></div>'+
       '<div class="rating-display">'+
-        '<img class="rating-face hidden" id="fi'+i+'" src="" alt="">'+
-        '<div>'+
-          '<span class="rating-hint" id="hint'+i+'">슬라이더를 움직여 주세요</span>'+
-          '<span class="rating-score" id="sc'+i+'" style="display:none"></span>'+
-        '</div>'+
+        '<span class="rating-hint" id="hint'+i+'">슬라이더를 움직여 주세요</span>'+
+        '<span class="rating-score" id="sc'+i+'"></span>'+
       '</div>'+
       '<div class="slider-wrap">'+
         '<input type="range" class="score-slider" id="sl'+i+'" min="1" max="10" step="1" value="1" data-idx="'+i+'">'+
@@ -334,7 +311,7 @@ window.addEventListener('DOMContentLoaded', function() {
     rc.appendChild(d);
   });
 
-  // 이벤트는 ratingContainer에 위임 (클로저 버그 완전 방지)
+  // 이벤트 위임으로 모든 슬라이더 처리 (PC + 모바일)
   rc.addEventListener('input', function(e) {
     if (e.target.classList.contains('score-slider')) {
       onRate(parseInt(e.target.dataset.idx), parseInt(e.target.value));
@@ -435,22 +412,22 @@ window.addEventListener('DOMContentLoaded', function() {
     btn.textContent = '제출 중...';
 
     var hasBiz = ['1','2','3','4','5'].indexOf(bizCk.value)>-1;
-    var bizM = hasBiz ? (parseInt(document.getElementById('bizYear').value||'0')*12 + parseInt(document.getElementById('bizMonth').value||'0')) : '';
-    var privM = parseInt(document.getElementById('privYear').value||'0')*12 + parseInt(document.getElementById('privMonth').value||'0');
-    var satText = satCk.value==='기타' ? document.getElementById('satisfiedEtcText').value.trim() : satCk.value;
+    var bizM = hasBiz?(parseInt(document.getElementById('bizYear').value||'0')*12+parseInt(document.getElementById('bizMonth').value||'0')):'';
+    var privM = parseInt(document.getElementById('privYear').value||'0')*12+parseInt(document.getElementById('privMonth').value||'0');
+    var satText = satCk.value==='기타'?document.getElementById('satisfiedEtcText').value.trim():satCk.value;
     var iEdu = document.querySelector('input[name="imp_edu"]:checked').value;
     var iFac = document.querySelector('input[name="imp_facility"]:checked').value;
     var iEtc = document.querySelector('input[name="imp_etc"]:checked').value;
 
     var params = new URLSearchParams({
-      eduDate: document.getElementById('eduDate').value,
-      age: document.getElementById('age').value,
-      gender: document.querySelector('input[name="gender"]:checked').value,
-      bizExp: bizCk.value, bizMonths: bizM, privMonths: privM,
-      transfer: document.querySelector('input[name="transfer"]:checked').value,
+      eduDate:document.getElementById('eduDate').value,
+      age:document.getElementById('age').value,
+      gender:document.querySelector('input[name="gender"]:checked').value,
+      bizExp:bizCk.value, bizMonths:bizM, privMonths:privM,
+      transfer:document.querySelector('input[name="transfer"]:checked').value,
       r1:ratings[0],r2:ratings[1],r3:ratings[2],r4:ratings[3],r5:ratings[4],
       r6:ratings[5],r7:ratings[6],r8:ratings[7],r9:ratings[8],r10:ratings[9],
-      satisfiedText: satText,
+      satisfiedText:satText,
       imp_edu_yn:iEdu, imp_edu_text:iEdu==='2'?document.getElementById('imp_edu_text').value.trim():'',
       imp_facility_yn:iFac, imp_facility_text:iFac==='2'?document.getElementById('imp_facility_text').value.trim():'',
       imp_etc_yn:iEtc, imp_etc_text:iEtc==='2'?document.getElementById('imp_etc_text').value.trim():''
