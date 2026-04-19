@@ -250,14 +250,13 @@ window.addEventListener('DOMContentLoaded', function() {
     var url = getFaceUrl(val);
     var styleId = 'thumb-style-'+idx;
     var el = document.getElementById(styleId);
-    if (!el) {
-      el = document.createElement('style');
-      el.id = styleId;
-      document.head.appendChild(el);
-    }
+    if (!el) { el = document.createElement('style'); el.id = styleId; document.head.appendChild(el); }
+    var rule =
+      'background:url("'+url+'") center/contain no-repeat!important;'+
+      'background-color:transparent!important;';
     el.textContent =
-      '#sl'+idx+'::-webkit-slider-thumb{background-color:transparent!important;background-image:url("'+url+'")!important;background-size:contain!important;background-repeat:no-repeat!important;background-position:center!important}'+
-      '#sl'+idx+'::-moz-range-thumb{background-color:transparent!important;background-image:url("'+url+'")!important;background-size:contain!important;background-repeat:no-repeat!important;background-position:center!important}';
+      '#sl'+idx+'::-webkit-slider-thumb{'+rule+'}'+
+      '#sl'+idx+'::-moz-range-thumb{'+rule+'}';
   }
 
   // 슬라이더 값 변경 처리
