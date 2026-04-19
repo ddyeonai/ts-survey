@@ -322,6 +322,14 @@ window.addEventListener('DOMContentLoaded', function() {
     }
   });
 
+  // 초기값: 슬라이더 위치만 5점으로, 점수/이미지는 표시 안 함
+  for (var j = 0; j < qs.length; j++) {
+    var sl = document.getElementById('sl'+j);
+    sl.value = 5; // 강제로 5점 위치
+    sl.defaultValue = 5;
+    setThumbImg(j, 5); // thumb 이미지만 neutral로
+  }
+
   // 라디오 스타일
   document.addEventListener('change', function(e) {
     if (e.target.type === 'radio') {
