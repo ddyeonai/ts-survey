@@ -256,8 +256,8 @@ window.addEventListener('DOMContentLoaded', function() {
       document.head.appendChild(el);
     }
     el.textContent =
-      '#sl'+idx+'::-webkit-slider-thumb{background-image:url("'+url+'")!important}'+
-      '#sl'+idx+'::-moz-range-thumb{background-image:url("'+url+'")!important}';
+      '#sl'+idx+'::-webkit-slider-thumb{background-color:transparent!important;background-image:url("'+url+'")!important;background-size:contain!important;background-repeat:no-repeat!important;background-position:center!important}'+
+      '#sl'+idx+'::-moz-range-thumb{background-color:transparent!important;background-image:url("'+url+'")!important;background-size:contain!important;background-repeat:no-repeat!important;background-position:center!important}';
   }
 
   // 슬라이더 값 변경 처리
