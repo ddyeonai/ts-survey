@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>설문 현황 조회 | TS 상주교통안전체험교육센터</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,'Malgun Gothic','Apple SD Gothic Neo',sans-serif;background:linear-gradient(135deg,#f0f4f8,#e8eef5);color:#1a2332;min-height:100vh;overflow-x:hidden}
+.wrap{max-width:640px;margin:0 auto;padding:0 16px 40px}
+
+/* ===== 코드 게이트 화면 ===== */
+#gate{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.gate-card{background:white;border-radius:16px;padding:40px 28px;box-shadow:0 8px 24px rgba(0,0,0,0.08);max-width:360px;width:100%;text-align:center}
+.gate-logo{font-size:48px;font-weight:900;letter-spacing:-1px;margin-bottom:8px}
+.gate-logo .t{background:linear-gradient(135deg,#ff8c00,#ffa500,#ff6b00);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.gate-logo .s{background:linear-gradient(135deg,#1e3a8a,#0056b3,#003d82);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.gate-title{font-size:17px;font-weight:700;color:#003d82;margin-bottom:24px}
+.gate-card input{width:100%;padding:16px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:20px;text-align:center;letter-spacing:4px;font-weight:700;color:#1a2332;margin-bottom:14px}
+.gate-card input:focus{outline:none;border-color:#0056b3;box-shadow:0 0 0 3px rgba(0,86,179,0.1)}
+.gate-btn{width:100%;padding:16px;border:none;border-radius:10px;background:#003d82;color:white;font-size:16px;font-weight:700;cursor:pointer}
+.gate-btn:active{background:#002a5c}
+.gate-err{color:#e53e3e;font-size:13px;font-weight:600;margin-top:12px;display:none}
+
+/* ===== 본문 ===== */
+#app{display:none}
+.header{background:white;padding:24px 16px 20px;margin:0 -16px 16px;box-shadow:0 4px 12px rgba(0,0,0,0.06);border-bottom:4px solid #003d82;position:sticky;top:0;z-index:10}
+.header-row{max-width:640px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+.header-title{font-size:17px;font-weight:800;color:#003d82}
+.header-sub{font-size:12px;color:#a0aec0;font-weight:600;margin-top:2px}
+.refresh-btn{background:#eff6ff;border:none;border-radius:20px;padding:8px 14px;font-size:13px;font-weight:700;color:#0056b3;cursor:pointer;display:flex;align-items:center;gap:5px}
+.refresh-btn:active{background:#dbeafe}
+.refresh-btn.spin svg{animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.filter-bar{display:flex;gap:8px;margin-bottom:16px;overflow-x:auto;padding-bottom:2px}
+.filter-bar::-webkit-scrollbar{display:none}
+.chip{flex-shrink:0;padding:9px 16px;border-radius:20px;background:white;border:1.5px solid #e2e8f0;font-size:13px;font-weight:700;color:#4a5568;cursor:pointer;white-space:nowrap}
+.chip.active{background:#003d82;border-color:#003d82;color:white}
+.chip.alert.active{background:#e53e3e;border-color:#e53e3e}
+
+.summary-bar{display:flex;gap:10px;margin-bottom:18px}
+.source-warning{background:#fffaf0;border:1.5px solid #fbd38d;color:#7b341e;font-size:12px;font-weight:700;padding:10px 12px;border-radius:10px;margin-bottom:14px}
+.src-badge{display:inline-block;font-size:10px;font-weight:800;padding:2px 8px;border-radius:8px;margin-left:6px;vertical-align:middle}
+.src-badge.taxi_out{background:#eff6ff;color:#0056b3}
+.src-badge.gaein{background:#fff8f0;color:#c05621}
+.summary-box{flex:1;background:white;border-radius:12px;padding:14px 10px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.04)}
+.summary-num{font-size:22px;font-weight:900;color:#003d82;line-height:1.1}
+.summary-label{font-size:11px;color:#a0aec0;font-weight:700;margin-top:3px}
+.summary-box.alert .summary-num{color:#e53e3e}
+
+.empty{text-align:center;padding:60px 20px;color:#a0aec0}
+.empty-icon{font-size:40px;margin-bottom:12px}
+.empty-text{font-size:14px;font-weight:600}
+
+.card{background:white;border-radius:12px;padding:16px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);border-left:5px solid #cbd5e0}
+.card.score-low{border-left-color:#e53e3e}
+.card.score-mid{border-left-color:#ffb020}
+.card.score-high{border-left-color:#0056b3}
+.card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.card-course{font-size:15px;font-weight:800;color:#2d3748}
+.card-meta{font-size:12px;color:#a0aec0;font-weight:600;margin-top:2px}
+.card-score{font-size:24px;font-weight:900;line-height:1;flex-shrink:0;padding-left:10px}
+.score-low .card-score{color:#e53e3e}
+.score-mid .card-score{color:#ffb020}
+.score-high .card-score{color:#0056b3}
+.card-score .unit{font-size:12px;font-weight:700;color:#a0aec0}
+
+.tag-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.tag{font-size:11px;font-weight:700;padding:4px 9px;border-radius:12px}
+.tag.complaint{background:#fff5f5;color:#e53e3e}
+.tag.good{background:#eff6ff;color:#0056b3}
+
+.text-block{font-size:13px;line-height:1.6;padding:10px 12px;border-radius:8px;margin-top:6px}
+.text-block.complaint{background:#fff8f0;color:#7b341e;border:1px solid #fed7aa}
+.text-block.good{background:#f0f9ff;color:#1e3a5c;border:1px solid #bee3f8}
+.text-block b{display:block;font-size:11px;margin-bottom:3px;opacity:.75}
+
+.footer-note{text-align:center;font-size:11px;color:#cbd5e0;font-weight:600;margin-top:20px;padding-top:16px}
+</style>
+</head>
+<body>
+
+<!-- 코드 게이트 -->
+<div id="gate">
+  <div class="gate-card">
+    <div class="gate-logo"><span class="t">T</span><span class="s">S</span></div>
+    <div class="gate-title">설문 현황 조회 · 접속코드 입력</div>
+    <input type="tel" id="codeInput" placeholder="••••" maxlength="8" inputmode="numeric">
+    <button class="gate-btn" id="gateBtn">확인</button>
+    <div class="gate-err" id="gateErr">코드가 올바르지 않습니다</div>
+  </div>
+</div>
+
+<!-- 본문 -->
+<div id="app">
+  <div class="header">
+    <div class="header-row">
+      <div>
+        <div class="header-title">📋 실시간 설문 현황</div>
+        <div class="header-sub" id="lastUpdated">불러오는 중...</div>
+      </div>
+      <button class="refresh-btn" id="refreshBtn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+        새로고침
+      </button>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="source-warning" id="sourceWarning" style="display:none"></div>
+    <div class="filter-bar" id="sourceBar"></div>
+    <div class="filter-bar" id="filterBar"></div>
+
+    <div class="summary-bar">
+      <div class="summary-box">
+        <div class="summary-num" id="sumTotal">-</div>
+        <div class="summary-label">표시된 응답</div>
+      </div>
+      <div class="summary-box alert">
+        <div class="summary-num" id="sumComplaint">-</div>
+        <div class="summary-label">불편사항</div>
+      </div>
+      <div class="summary-box">
+        <div class="summary-num" id="sumAvg">-</div>
+        <div class="summary-label">평균 만족도</div>
+      </div>
+    </div>
+
+    <div id="cardList"></div>
+    <div class="footer-note">최근 응답 순으로 표시됩니다 · 30초마다 자동 새로고침</div>
+  </div>
+</div>
+
+<script>
+// 두 설문의 Apps Script 웹앱 URL
+var SOURCES = [
+  {
+    key: 'taxi_out',
+    label: '택시 외',
+    url: 'https://script.google.com/macros/s/AKfycbwnQYYRocQD0hYFuXSqAjNX57Vobsh1XreqzAebMhBAsYYaoRWCJhXVO1VuDZ8ncCU/exec'
+  },
+  {
+    key: 'gaein',
+    label: '개인택시양수',
+    url: 'https://script.google.com/macros/s/AKfycbwkhAQkLibwWOq30YiTxXTdPa1j6BK6jDK0yWVYqzmUQ_o0zKRO1mFEMd-3xMuBPVb1/exec'
+  }
+];
+
+var STORAGE_KEY = 'ts_view_code_combined';
+var allData = [];
+var currentCourseFilter = '전체';
+var currentSourceFilter = '전체';
+var complaintOnly = false;
+var autoRefreshTimer = null;
+
+// ---- 코드 게이트 ----
+var savedCode = localStorage.getItem(STORAGE_KEY);
+if (savedCode) {
+  tryLoad(savedCode);
+}
+
+document.getElementById('gateBtn').addEventListener('click', function(){
+  var code = document.getElementById('codeInput').value.trim();
+  if (!code) return;
+  tryLoad(code);
+});
+document.getElementById('codeInput').addEventListener('keydown', function(e){
+  if (e.key === 'Enter') document.getElementById('gateBtn').click();
+});
+
+function fetchAllSources(code) {
+  var promises = SOURCES.map(function(src){
+    return fetch(src.url + '?mode=view&code=' + encodeURIComponent(code))
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        if (data && data.error) return { key: src.key, ok: false, rows: [] };
+        var rows = data.map(function(row){ row.__source = src.key; row.__sourceLabel = src.label; return row; });
+        return { key: src.key, ok: true, rows: rows };
+      })
+      .catch(function(){ return { key: src.key, ok: false, rows: [] }; });
+  });
+  return Promise.all(promises);
+}
+
+function tryLoad(code) {
+  document.getElementById('gateErr').style.display = 'none';
+  fetchAllSources(code).then(function(results){
+    var anyOk = results.some(function(r){ return r.ok; });
+    if (!anyOk) {
+      document.getElementById('gateErr').textContent = '코드가 올바르지 않습니다';
+      document.getElementById('gateErr').style.display = 'block';
+      localStorage.removeItem(STORAGE_KEY);
+      return;
+    }
+    localStorage.setItem(STORAGE_KEY, code);
+    document.getElementById('gate').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    allData = results.reduce(function(acc, r){ return acc.concat(r.rows); }, []);
+    showSourceWarning(results);
+    render();
+    startAutoRefresh(code);
+  });
+}
+
+function showSourceWarning(results) {
+  var failed = results.filter(function(r){ return !r.ok; });
+  var el = document.getElementById('sourceWarning');
+  if (failed.length) {
+    var names = failed.map(function(r){
+      var src = SOURCES.filter(function(s){ return s.key === r.key; })[0];
+      return src ? src.label : r.key;
+    }).join(', ');
+    el.textContent = '⚠️ ' + names + ' 설문 데이터를 불러오지 못했습니다 (코드 또는 URL 확인 필요)';
+    el.style.display = 'block';
+  } else {
+    el.style.display = 'none';
+  }
+}
+
+function startAutoRefresh(code) {
+  if (autoRefreshTimer) clearInterval(autoRefreshTimer);
+  autoRefreshTimer = setInterval(function(){ refresh(code); }, 30000);
+}
+
+function refresh(code) {
+  var btn = document.getElementById('refreshBtn');
+  btn.classList.add('spin');
+  fetchAllSources(code).then(function(results){
+    var anyOk = results.some(function(r){ return r.ok; });
+    if (anyOk) {
+      allData = results.reduce(function(acc, r){ return acc.concat(r.rows); }, []);
+      showSourceWarning(results);
+      render();
+    }
+    btn.classList.remove('spin');
+  });
+}
+
+document.getElementById('refreshBtn').addEventListener('click', function(){
+  var code = localStorage.getItem(STORAGE_KEY);
+  if (code) refresh(code);
+});
+
+// ---- 렌더링 ----
+function avgScore(row) {
+  var keys = ['r1','r2','r3','r4','r5','r6','r7','r8','r9','r10'];
+  var sum = 0, cnt = 0;
+  keys.forEach(function(k){
+    var v = row[k];
+    if (v !== '' && v !== null && v !== undefined && !isNaN(v)) { sum += Number(v); cnt++; }
+  });
+  return cnt ? sum / cnt : null;
+}
+
+function hasComplaint(row) {
+  return row.impEduYn == 2 || row.impFacilityYn == 2 || row.impEtcYn == 2;
+}
+
+function scoreClass(avg) {
+  if (avg === null) return '';
+  if (avg < 5) return 'score-low';
+  if (avg < 8) return 'score-mid';
+  return 'score-high';
+}
+
+function render() {
+  // 설문 구분 필터칩
+  var sourceBar = document.getElementById('sourceBar');
+  sourceBar.innerHTML = '';
+  var sourceOptions = [{ key: '전체', label: '전체 설문' }].concat(
+    SOURCES.map(function(s){ return { key: s.key, label: s.label }; })
+  );
+  sourceOptions.forEach(function(opt){
+    var chip = document.createElement('div');
+    chip.className = 'chip' + (opt.key === currentSourceFilter ? ' active' : '');
+    chip.textContent = opt.label;
+    chip.onclick = function(){ currentSourceFilter = opt.key; currentCourseFilter = '전체'; render(); };
+    sourceBar.appendChild(chip);
+  });
+
+  // 과정 목록 필터칩 구성 (선택된 설문 구분 내에서만)
+  var scoped = allData.filter(function(row){
+    return currentSourceFilter === '전체' || row.__source === currentSourceFilter;
+  });
+  var courses = ['전체'];
+  scoped.forEach(function(row){
+    if (row.courseName && courses.indexOf(row.courseName) === -1) courses.push(row.courseName);
+  });
+
+  var filterBar = document.getElementById('filterBar');
+  filterBar.innerHTML = '';
+  courses.forEach(function(c){
+    var chip = document.createElement('div');
+    chip.className = 'chip' + (c === currentCourseFilter ? ' active' : '');
+    chip.textContent = c;
+    chip.onclick = function(){ currentCourseFilter = c; render(); };
+    filterBar.appendChild(chip);
+  });
+  var alertChip = document.createElement('div');
+  alertChip.className = 'chip alert' + (complaintOnly ? ' active' : '');
+  alertChip.textContent = '🚨 불편사항만';
+  alertChip.onclick = function(){ complaintOnly = !complaintOnly; render(); };
+  filterBar.appendChild(alertChip);
+
+  // 필터 적용
+  var filtered = allData.filter(function(row){
+    if (currentSourceFilter !== '전체' && row.__source !== currentSourceFilter) return false;
+    if (currentCourseFilter !== '전체' && row.courseName !== currentCourseFilter) return false;
+    if (complaintOnly && !hasComplaint(row)) return false;
+    return true;
+  });
+
+  // 요약
+  document.getElementById('sumTotal').textContent = filtered.length;
+  document.getElementById('sumComplaint').textContent = filtered.filter(hasComplaint).length;
+  var avgs = filtered.map(avgScore).filter(function(v){ return v !== null; });
+  var overallAvg = avgs.length ? (avgs.reduce(function(a,b){return a+b;},0) / avgs.length) : null;
+  document.getElementById('sumAvg').textContent = overallAvg !== null ? overallAvg.toFixed(1) : '-';
+
+  // 카드 목록
+  var listEl = document.getElementById('cardList');
+  listEl.innerHTML = '';
+
+  if (filtered.length === 0) {
+    listEl.innerHTML = '<div class="empty"><div class="empty-icon">📭</div><div class="empty-text">표시할 응답이 없습니다</div></div>';
+  } else {
+    filtered.forEach(function(row){
+      var avg = avgScore(row);
+      var cls = scoreClass(avg);
+      var card = document.createElement('div');
+      card.className = 'card ' + cls;
+
+      var html = '';
+      html += '<div class="card-top">';
+      html += '  <div><div class="card-course">' + escapeHtml(row.courseName || '(과정명 미상)') +
+              '<span class="src-badge ' + row.__source + '">' + escapeHtml(row.__sourceLabel) + '</span></div>';
+      html += '  <div class="card-meta">입교 ' + escapeHtml(row.eduDate || '-') + ' · No.' + escapeHtml(row.num) +
+              (row.transfer ? ' · 양수계획 ' + escapeHtml(row.transfer) : '') + '</div></div>';
+      html += '  <div class="card-score">' + (avg !== null ? avg.toFixed(1) : '-') + '<span class="unit"> /10</span></div>';
+      html += '</div>';
+
+      var tags = '';
+      if (row.impEduYn == 2) tags += '<span class="tag complaint">교육 불편</span>';
+      if (row.impFacilityYn == 2) tags += '<span class="tag complaint">시설 불편</span>';
+      if (row.impEtcYn == 2) tags += '<span class="tag complaint">기타의견</span>';
+      if (row.satisfiedText) tags += '<span class="tag good">만족 포인트</span>';
+      if (tags) html += '<div class="tag-row">' + tags + '</div>';
+
+      if (row.impEduYn == 2 && row.impEduText) {
+        html += '<div class="text-block complaint"><b>교육 불편사항</b>' + escapeHtml(row.impEduText) + '</div>';
+      }
+      if (row.impFacilityYn == 2 && row.impFacilityText) {
+        html += '<div class="text-block complaint"><b>시설 불편사항</b>' + escapeHtml(row.impFacilityText) + '</div>';
+      }
+      if (row.impEtcYn == 2 && row.impEtcText) {
+        html += '<div class="text-block complaint"><b>기타 의견</b>' + escapeHtml(row.impEtcText) + '</div>';
+      }
+      if (row.satisfiedText) {
+        html += '<div class="text-block good"><b>만족스러운 내용</b>' + escapeHtml(row.satisfiedText) + '</div>';
+      }
+
+      card.innerHTML = html;
+      listEl.appendChild(card);
+    });
+  }
+
+  var now = new Date();
+  document.getElementById('lastUpdated').textContent =
+    '업데이트 ' + now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
+}
+
+function escapeHtml(str) {
+  if (str === null || str === undefined) return '';
+  return String(str).replace(/[&<>"']/g, function(m){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m];
+  });
+}
+</script>
+</body>
+</html>
