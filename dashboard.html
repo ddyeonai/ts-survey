@@ -105,7 +105,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Malgun Gothic','Apple SD Goth
     <div class="header-row">
       <div>
         <div class="header-title">📋 실시간 설문 현황</div>
-        <div class="header-sub" id="lastUpdated">불러오는 중...</div>
+        <div class="header-sub"><span id="headerTotal">-</span> · <span id="lastUpdated">불러오는 중...</span></div>
       </div>
       <button class="refresh-btn" id="refreshBtn">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
@@ -128,7 +128,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Malgun Gothic','Apple SD Goth
     <div class="summary-bar">
       <div class="summary-box">
         <div class="summary-num" id="sumTotal">-</div>
-        <div class="summary-label">표시된 응답</div>
+        <div class="summary-label">필터된 응답</div>
       </div>
       <div class="summary-box alert">
         <div class="summary-num" id="sumComplaint">-</div>
@@ -319,6 +319,14 @@ function render() {
   var scoped = allData.filter(function(row){
     return currentSourceFilter === '전체' || row.__source === currentSourceFilter;
   });
+
+  // 헤더의 "전체 누적" 표시 - 과정/월 필터와 무관하게 현재 선택된 설문 구분 기준 총원
+  var sourceLabelForTotal = currentSourceFilter === '전체'
+    ? '전체'
+    : (SOURCES.filter(function(s){ return s.key === currentSourceFilter; })[0] || {}).label;
+  document.getElementById('headerTotal').textContent =
+    '(' + sourceLabelForTotal + ') 누적 응답 총 ' + scoped.length + '명';
+
   var courses = ['전체'];
   scoped.forEach(function(row){
     if (row.courseName && courses.indexOf(row.courseName) === -1) courses.push(row.courseName);
@@ -378,7 +386,7 @@ function render() {
   });
 
   // 요약
-  document.getElementById('sumTotal').textContent = filtered.length;
+  document.getElementById('sumTotal').textContent = filtered.length + '명';
   document.getElementById('sumComplaint').textContent = filtered.filter(hasComplaint).length;
   var avgs = filtered.map(avgScore).filter(function(v){ return v !== null; });
   var overallAvg = avgs.length ? (avgs.reduce(function(a,b){return a+b;},0) / avgs.length) : null;
