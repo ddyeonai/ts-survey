@@ -48,42 +48,36 @@ body{
 /* ===== 코드 게이트 ===== */
 #gate{
   min-height:100vh;min-height:100dvh;
-  display:flex;flex-direction:column;justify-content:center;
+  display:flex;align-items:center;justify-content:center;
   padding:24px;
   padding-top:calc(24px + env(safe-area-inset-top));
   padding-bottom:calc(24px + env(safe-area-inset-bottom));
-  max-width:480px;margin:0 auto;
 }
-.gate-card{width:100%}
-.gate-logo{font-size:32px;font-weight:800;letter-spacing:-1.5px;margin-bottom:20px}
+.gate-card{width:100%;max-width:280px;text-align:center}
+.gate-logo{
+  font-size:76px;font-weight:800;letter-spacing:-4px;
+  line-height:1;margin-bottom:28px;
+}
 .gate-logo .t{color:#FF9500}
 .gate-logo .s{color:var(--blue)}
-.gate-headline{
-  font-size:26px;font-weight:700;line-height:1.4;
-  color:var(--ink);margin-bottom:8px;letter-spacing:-0.8px;
+.gate-sub{
+  font-size:14px;color:var(--ink-3);font-weight:500;
+  margin-bottom:16px;letter-spacing:-0.3px;
 }
-.gate-sub{font-size:15px;color:var(--ink-3);font-weight:500;margin-bottom:36px;line-height:1.5}
 .gate-card input{
   width:100%;padding:18px 20px;
   border:none;border-radius:var(--r-md);
   background:var(--surface);
   font-size:22px;text-align:center;letter-spacing:8px;
   font-weight:700;color:var(--ink);
-  margin-bottom:12px;min-height:60px;
+  min-height:60px;
   font-family:inherit;
   transition:box-shadow .2s;
 }
-.gate-card input::placeholder{color:#D1D6DB;letter-spacing:8px}
+.gate-card input::placeholder{color:#D1D6DB;letter-spacing:8px;font-weight:600}
 .gate-card input:focus{outline:none;box-shadow:0 0 0 2px var(--blue)}
-.gate-btn{
-  width:100%;padding:18px;border:none;border-radius:var(--r-md);
-  background:var(--blue);color:white;
-  font-size:17px;font-weight:700;cursor:pointer;min-height:60px;
-  font-family:inherit;letter-spacing:-0.3px;
-  transition:background .15s, transform .1s;
-}
-.gate-btn:active{background:var(--blue-press);transform:scale(0.985)}
-.gate-err{color:var(--red);font-size:14px;font-weight:600;margin-top:14px;display:none;text-align:center}
+.gate-card input.checking{opacity:.55}
+.gate-err{color:var(--red);font-size:13px;font-weight:600;margin-top:14px;display:none}
 
 /* ===== 헤더 ===== */
 #app{display:none}
@@ -250,10 +244,8 @@ body{
 <div id="gate">
   <div class="gate-card">
     <div class="gate-logo"><span class="t">T</span><span class="s">S</span></div>
-    <div class="gate-headline">교육생 설문 현황을<br>확인해 볼까요?</div>
-    <div class="gate-sub">전달받으신 접속코드를 입력해 주세요</div>
+    <div class="gate-sub">접속코드를 입력해 주세요</div>
     <input type="tel" id="codeInput" placeholder="0000" maxlength="8" inputmode="numeric">
-    <button class="gate-btn" id="gateBtn">확인</button>
     <div class="gate-err" id="gateErr">코드가 올바르지 않아요</div>
   </div>
 </div>
@@ -335,13 +327,24 @@ if (savedCode) {
   tryLoad(savedCode);
 }
 
-document.getElementById('gateBtn').addEventListener('click', function(){
-  var code = document.getElementById('codeInput').value.trim();
-  if (!code) return;
-  tryLoad(code);
+var codeInputEl = document.getElementById('codeInput');
+var autoSubmitTimer = null;
+
+codeInputEl.addEventListener('input', function(){
+  document.getElementById('gateErr').style.display = 'none';
+  var code = codeInputEl.value.trim();
+  clearTimeout(autoSubmitTimer);
+  // 4자리 이상 입력되면 잠깐 기다렸다가 자동으로 확인
+  if (code.length >= 4) {
+    autoSubmitTimer = setTimeout(function(){ tryLoad(code); }, 400);
+  }
 });
-document.getElementById('codeInput').addEventListener('keydown', function(e){
-  if (e.key === 'Enter') document.getElementById('gateBtn').click();
+codeInputEl.addEventListener('keydown', function(e){
+  if (e.key === 'Enter') {
+    clearTimeout(autoSubmitTimer);
+    var code = codeInputEl.value.trim();
+    if (code) tryLoad(code);
+  }
 });
 
 function fetchAllSources(code) {
@@ -360,7 +363,10 @@ function fetchAllSources(code) {
 
 function tryLoad(code) {
   document.getElementById('gateErr').style.display = 'none';
+  var inputEl = document.getElementById('codeInput');
+  if (inputEl) inputEl.classList.add('checking');
   fetchAllSources(code).then(function(results){
+    if (inputEl) inputEl.classList.remove('checking');
     var anyOk = results.some(function(r){ return r.ok; });
     if (!anyOk) {
       document.getElementById('gateErr').textContent = '코드가 올바르지 않아요';
