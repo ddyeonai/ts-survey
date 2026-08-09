@@ -3,87 +3,245 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#003d82">
+<meta name="theme-color" content="#F2F4F6">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>설문 현황 조회 | TS 상주교통안전체험교육센터</title>
+<title>설문 현황 | TS 상주교통안전체험교육센터</title>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <style>
+/* ===== 토스풍 디자인 토큰 ===== */
+:root{
+  --bg:#F2F4F6;
+  --surface:#FFFFFF;
+  --ink:#191F28;
+  --ink-2:#4E5968;
+  --ink-3:#8B95A1;
+  --line:#E5E8EB;
+  --blue:#3182F6;
+  --blue-weak:#E8F3FF;
+  --blue-press:#1B64DA;
+  --red:#F04452;
+  --red-weak:#FEE;
+  --amber:#FF9500;
+  --amber-weak:#FFF4E6;
+  --green:#00B26B;
+  --r-lg:20px;
+  --r-md:16px;
+  --r-sm:12px;
+}
+
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html{-webkit-text-size-adjust:100%}
-body{font-family:-apple-system,BlinkMacSystemFont,'Malgun Gothic','Apple SD Gothic Neo',sans-serif;background:linear-gradient(135deg,#f0f4f8,#e8eef5);color:#1a2332;min-height:100vh;min-height:100dvh;overflow-x:hidden;padding-bottom:env(safe-area-inset-bottom)}
-.wrap{max-width:640px;margin:0 auto;padding:0 16px 40px}
+body{
+  font-family:'Pretendard Variable','Pretendard',-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  min-height:100vh;min-height:100dvh;
+  overflow-x:hidden;
+  letter-spacing:-0.3px;
+  padding-bottom:env(safe-area-inset-bottom);
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:640px;margin:0 auto;padding:0 20px 48px}
 
-/* ===== 코드 게이트 화면 ===== */
-#gate{min-height:100vh;min-height:100dvh;display:flex;align-items:center;justify-content:center;padding:20px;padding-top:calc(20px + env(safe-area-inset-top));padding-bottom:calc(20px + env(safe-area-inset-bottom))}
-.gate-card{background:white;border-radius:16px;padding:40px 28px;box-shadow:0 8px 24px rgba(0,0,0,0.08);max-width:360px;width:100%;text-align:center}
-.gate-logo{font-size:48px;font-weight:900;letter-spacing:-1px;margin-bottom:8px}
-.gate-logo .t{background:linear-gradient(135deg,#ff8c00,#ffa500,#ff6b00);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-.gate-logo .s{background:linear-gradient(135deg,#1e3a8a,#0056b3,#003d82);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-.gate-title{font-size:17px;font-weight:700;color:#003d82;margin-bottom:24px}
-.gate-card input{width:100%;padding:16px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:20px;text-align:center;letter-spacing:4px;font-weight:700;color:#1a2332;margin-bottom:14px;min-height:52px}
-.gate-card input:focus{outline:none;border-color:#0056b3;box-shadow:0 0 0 3px rgba(0,86,179,0.1)}
-.gate-btn{width:100%;padding:16px;border:none;border-radius:10px;background:#003d82;color:white;font-size:16px;font-weight:700;cursor:pointer;min-height:52px}
-.gate-btn:active{background:#002a5c}
-.gate-err{color:#e53e3e;font-size:13px;font-weight:600;margin-top:12px;display:none}
+/* ===== 코드 게이트 ===== */
+#gate{
+  min-height:100vh;min-height:100dvh;
+  display:flex;flex-direction:column;justify-content:center;
+  padding:24px;
+  padding-top:calc(24px + env(safe-area-inset-top));
+  padding-bottom:calc(24px + env(safe-area-inset-bottom));
+  max-width:480px;margin:0 auto;
+}
+.gate-card{width:100%}
+.gate-logo{font-size:32px;font-weight:800;letter-spacing:-1.5px;margin-bottom:20px}
+.gate-logo .t{color:#FF9500}
+.gate-logo .s{color:var(--blue)}
+.gate-headline{
+  font-size:26px;font-weight:700;line-height:1.4;
+  color:var(--ink);margin-bottom:8px;letter-spacing:-0.8px;
+}
+.gate-sub{font-size:15px;color:var(--ink-3);font-weight:500;margin-bottom:36px;line-height:1.5}
+.gate-card input{
+  width:100%;padding:18px 20px;
+  border:none;border-radius:var(--r-md);
+  background:var(--surface);
+  font-size:22px;text-align:center;letter-spacing:8px;
+  font-weight:700;color:var(--ink);
+  margin-bottom:12px;min-height:60px;
+  font-family:inherit;
+  transition:box-shadow .2s;
+}
+.gate-card input::placeholder{color:#D1D6DB;letter-spacing:8px}
+.gate-card input:focus{outline:none;box-shadow:0 0 0 2px var(--blue)}
+.gate-btn{
+  width:100%;padding:18px;border:none;border-radius:var(--r-md);
+  background:var(--blue);color:white;
+  font-size:17px;font-weight:700;cursor:pointer;min-height:60px;
+  font-family:inherit;letter-spacing:-0.3px;
+  transition:background .15s, transform .1s;
+}
+.gate-btn:active{background:var(--blue-press);transform:scale(0.985)}
+.gate-err{color:var(--red);font-size:14px;font-weight:600;margin-top:14px;display:none;text-align:center}
 
-/* ===== 본문 ===== */
+/* ===== 헤더 ===== */
 #app{display:none}
-.header{background:white;padding:calc(16px + env(safe-area-inset-top)) 16px 14px;margin:0 -16px 0;box-shadow:0 4px 12px rgba(0,0,0,0.06);border-bottom:4px solid #003d82;position:sticky;top:0;z-index:20}
-.header-row{max-width:640px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
-.header-title{font-size:16px;font-weight:800;color:#003d82}
-.header-sub{font-size:11px;color:#a0aec0;font-weight:600;margin-top:2px}
-.refresh-btn{background:#eff6ff;border:none;border-radius:20px;padding:10px 14px;font-size:13px;font-weight:700;color:#0056b3;cursor:pointer;display:flex;align-items:center;gap:5px;min-height:40px}
-.refresh-btn:active{background:#dbeafe}
-.refresh-btn.spin svg{animation:spin .6s linear infinite}
+.header{
+  background:var(--bg);
+  padding:calc(20px + env(safe-area-inset-top)) 20px 12px;
+  position:sticky;top:0;z-index:20;
+}
+.header-row{max-width:640px;margin:0 auto;display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.header-title{font-size:22px;font-weight:700;color:var(--ink);letter-spacing:-0.7px;line-height:1.3}
+.header-sub{font-size:13px;color:var(--ink-3);font-weight:500;margin-top:6px;line-height:1.5}
+.refresh-btn{
+  background:transparent;border:none;
+  padding:8px;font-size:0;color:var(--ink-3);
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  min-height:40px;min-width:40px;border-radius:50%;
+  transition:background .15s;flex-shrink:0;
+}
+.refresh-btn:active{background:var(--line)}
+.refresh-btn svg{width:20px;height:20px}
+.refresh-btn.spin svg{animation:spin .7s cubic-bezier(.4,0,.2,1) infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-.filter-sticky{position:sticky;top:calc(56px + env(safe-area-inset-top));z-index:15;background:#f0f4f8;margin:0 -16px;padding:12px 16px 4px;backdrop-filter:blur(6px)}
-.filter-bar{display:flex;gap:8px;margin-bottom:10px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px;scrollbar-width:none}
+#headerTotal{
+  display:inline-block;border-radius:6px;
+  padding:2px 5px;margin:-2px -5px;
+  transition:background-color .4s, color .4s;
+}
+#headerTotal.pulse{animation:pulseGlow 1.8s cubic-bezier(.4,0,.2,1)}
+@keyframes pulseGlow{
+  0%{background-color:rgba(0,178,107,.14);color:var(--green)}
+  55%{background-color:rgba(0,178,107,.14);color:var(--green)}
+  100%{background-color:transparent;color:var(--ink-3)}
+}
+.new-badge{
+  display:inline-block;background:var(--green);color:white;
+  font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;
+  margin-left:7px;vertical-align:middle;letter-spacing:-0.2px;
+  animation:badgeIn .4s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes badgeIn{
+  from{opacity:0;transform:scale(.6) translateY(3px)}
+  to{opacity:1;transform:scale(1) translateY(0)}
+}
+
+/* ===== 필터 ===== */
+.filter-sticky{
+  position:sticky;top:calc(72px + env(safe-area-inset-top));z-index:15;
+  background:var(--bg);
+  padding:8px 0 6px;
+}
+.filter-bar{
+  display:flex;gap:8px;margin-bottom:8px;
+  overflow-x:auto;-webkit-overflow-scrolling:touch;
+  padding:0 20px 2px;scrollbar-width:none;
+  max-width:640px;margin-left:auto;margin-right:auto;
+}
 .filter-bar::-webkit-scrollbar{display:none}
-.filter-group-label{font-size:10px;font-weight:800;color:#a0aec0;margin:0 0 4px 2px;letter-spacing:.3px}
-.chip{flex-shrink:0;padding:10px 16px;min-height:38px;display:flex;align-items:center;border-radius:20px;background:white;border:1.5px solid #e2e8f0;font-size:13px;font-weight:700;color:#4a5568;cursor:pointer;white-space:nowrap;touch-action:manipulation}
-.chip.active{background:#003d82;border-color:#003d82;color:white}
-.chip.alert.active{background:#e53e3e;border-color:#e53e3e}
+.filter-bar:last-child{margin-bottom:0}
+.chip{
+  flex-shrink:0;padding:9px 16px;min-height:38px;
+  display:flex;align-items:center;border-radius:20px;
+  background:var(--surface);border:none;
+  font-size:14px;font-weight:600;color:var(--ink-2);
+  cursor:pointer;white-space:nowrap;touch-action:manipulation;
+  letter-spacing:-0.3px;
+  transition:background .15s, color .15s, transform .1s;
+}
+.chip:active{transform:scale(0.96)}
+.chip.active{background:var(--ink);color:white;font-weight:700}
+.chip.alert.active{background:var(--red);color:white}
 
-.summary-bar{display:flex;gap:10px;margin-bottom:18px;margin-top:14px}
-.source-warning{background:#fffaf0;border:1.5px solid #fbd38d;color:#7b341e;font-size:12px;font-weight:700;padding:10px 12px;border-radius:10px;margin-bottom:14px}
-.src-badge{display:inline-block;font-size:10px;font-weight:800;padding:2px 8px;border-radius:8px;margin-left:6px;vertical-align:middle}
-.src-badge.taxi_out{background:#eff6ff;color:#0056b3}
-.src-badge.gaein{background:#fff8f0;color:#c05621}
-.summary-box{flex:1;background:white;border-radius:12px;padding:14px 10px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.04)}
-.summary-num{font-size:22px;font-weight:900;color:#003d82;line-height:1.1}
-.summary-label{font-size:11px;color:#a0aec0;font-weight:700;margin-top:3px}
-.summary-box.alert .summary-num{color:#e53e3e}
+/* ===== 요약 ===== */
+.summary-bar{
+  display:flex;gap:0;margin:16px 0 24px;
+  background:var(--surface);border-radius:var(--r-lg);
+  padding:22px 8px;
+}
+.summary-box{flex:1;text-align:center;position:relative}
+.summary-box + .summary-box::before{
+  content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);
+  width:1px;height:32px;background:var(--line);
+}
+.summary-num{font-size:24px;font-weight:700;color:var(--ink);line-height:1.2;letter-spacing:-0.8px}
+.summary-label{font-size:13px;color:var(--ink-3);font-weight:500;margin-top:6px;letter-spacing:-0.3px}
+.summary-box.alert .summary-num{color:var(--red)}
 
-.empty{text-align:center;padding:60px 20px;color:#a0aec0}
-.empty-icon{font-size:40px;margin-bottom:12px}
-.empty-text{font-size:14px;font-weight:600}
+.source-warning{
+  background:var(--amber-weak);color:#A15C00;
+  font-size:14px;font-weight:600;padding:14px 16px;
+  border-radius:var(--r-md);margin:12px 0 0;line-height:1.5;
+}
 
-.card{background:white;border-radius:12px;padding:16px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);border-left:5px solid #cbd5e0}
-.card.score-low{border-left-color:#e53e3e}
-.card.score-mid{border-left-color:#ffb020}
-.card.score-high{border-left-color:#0056b3}
-.card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
-.card-course{font-size:15px;font-weight:800;color:#2d3748}
-.card-meta{font-size:12px;color:#a0aec0;font-weight:600;margin-top:2px}
-.card-score{font-size:24px;font-weight:900;line-height:1;flex-shrink:0;padding-left:10px}
-.score-low .card-score{color:#e53e3e}
-.score-mid .card-score{color:#ffb020}
-.score-high .card-score{color:#0056b3}
-.card-score .unit{font-size:12px;font-weight:700;color:#a0aec0}
+/* ===== 카드 ===== */
+.empty{text-align:center;padding:72px 20px;color:var(--ink-3)}
+.empty-icon{font-size:44px;margin-bottom:14px;opacity:.5}
+.empty-text{font-size:15px;font-weight:500}
 
-.tag-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
-.tag{font-size:11px;font-weight:700;padding:4px 9px;border-radius:12px}
-.tag.complaint{background:#fff5f5;color:#e53e3e}
-.tag.good{background:#eff6ff;color:#0056b3}
+.card{
+  background:var(--surface);border-radius:var(--r-lg);
+  padding:20px;margin-bottom:12px;
+  transition:transform .1s;
+  animation:cardIn .32s cubic-bezier(.16,1,.3,1) both;
+}
+@keyframes cardIn{
+  from{opacity:0;transform:translateY(8px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@media (prefers-reduced-motion:reduce){
+  .card{animation:none}
+  .refresh-btn.spin svg{animation:none}
+}
+.card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:14px}
+.card-course{
+  font-size:17px;font-weight:700;color:var(--ink);
+  letter-spacing:-0.5px;line-height:1.35;
+}
+.card-meta{font-size:13px;color:var(--ink-3);font-weight:500;margin-top:5px;line-height:1.5}
+.card-score{
+  font-size:15px;font-weight:700;line-height:1;flex-shrink:0;
+  padding:8px 12px;border-radius:20px;
+  letter-spacing:-0.3px;white-space:nowrap;
+}
+.score-low .card-score{background:var(--red-weak);color:var(--red)}
+.score-mid .card-score{background:var(--amber-weak);color:#D97706}
+.score-high .card-score{background:var(--blue-weak);color:var(--blue)}
+.card-score .unit{font-size:12px;font-weight:600;opacity:.65}
 
-.text-block{font-size:13px;line-height:1.6;padding:10px 12px;border-radius:8px;margin-top:6px}
-.text-block.complaint{background:#fff8f0;color:#7b341e;border:1px solid #fed7aa}
-.text-block.good{background:#f0f9ff;color:#1e3a5c;border:1px solid #bee3f8}
-.text-block b{display:block;font-size:11px;margin-bottom:3px;opacity:.75}
+.src-badge{
+  display:inline-block;font-size:12px;font-weight:600;
+  padding:3px 9px;border-radius:8px;margin-left:7px;
+  vertical-align:middle;letter-spacing:-0.2px;
+}
+.src-badge.taxi_out{background:var(--blue-weak);color:var(--blue)}
+.src-badge.gaein{background:var(--amber-weak);color:#C2410C}
 
-.footer-note{text-align:center;font-size:11px;color:#cbd5e0;font-weight:600;margin-top:20px;padding-top:16px}
+.tag-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.tag{font-size:12px;font-weight:600;padding:5px 11px;border-radius:8px;letter-spacing:-0.2px}
+.tag.complaint{background:var(--red-weak);color:var(--red)}
+.tag.good{background:var(--blue-weak);color:var(--blue)}
+
+.text-block{
+  font-size:14px;line-height:1.65;padding:14px 16px;
+  border-radius:var(--r-sm);margin-top:8px;
+  background:#F7F8FA;color:var(--ink-2);border:none;
+  letter-spacing:-0.3px;
+}
+.text-block.complaint{background:#FFF7F7;color:#8B2E36}
+.text-block.good{background:#F4F9FF;color:#1E4A82}
+.text-block b{
+  display:block;font-size:12px;margin-bottom:5px;
+  font-weight:700;opacity:.65;letter-spacing:-0.2px;
+}
+
+.footer-note{
+  text-align:center;font-size:13px;color:var(--ink-3);
+  font-weight:500;margin-top:28px;letter-spacing:-0.3px;
+}
 </style>
 </head>
 <body>
@@ -92,10 +250,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Malgun Gothic','Apple SD Goth
 <div id="gate">
   <div class="gate-card">
     <div class="gate-logo"><span class="t">T</span><span class="s">S</span></div>
-    <div class="gate-title">설문 현황 조회 · 접속코드 입력</div>
-    <input type="tel" id="codeInput" placeholder="••••" maxlength="8" inputmode="numeric">
+    <div class="gate-headline">교육생 설문 현황을<br>확인해 볼까요?</div>
+    <div class="gate-sub">전달받으신 접속코드를 입력해 주세요</div>
+    <input type="tel" id="codeInput" placeholder="0000" maxlength="8" inputmode="numeric">
     <button class="gate-btn" id="gateBtn">확인</button>
-    <div class="gate-err" id="gateErr">코드가 올바르지 않습니다</div>
+    <div class="gate-err" id="gateErr">코드가 올바르지 않아요</div>
   </div>
 </div>
 
@@ -104,8 +263,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Malgun Gothic','Apple SD Goth
   <div class="header">
     <div class="header-row">
       <div>
-        <div class="header-title">📋 실시간 설문 현황</div>
-        <div class="header-sub"><span id="headerTotal">-</span> · <span id="lastUpdated">불러오는 중...</span></div>
+        <div class="header-title">설문 현황</div>
+        <div class="header-sub"><span id="headerTotal">-</span> · <span id="lastUpdated">불러오는 중</span></div>
       </div>
       <button class="refresh-btn" id="refreshBtn">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
@@ -141,7 +300,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Malgun Gothic','Apple SD Goth
     </div>
 
     <div id="cardList"></div>
-    <div class="footer-note">최근 응답 순으로 표시됩니다 · 30초마다 자동 새로고침</div>
+    <div class="footer-note">최근 응답부터 보여드려요 · 30초마다 자동으로 새로고침돼요</div>
   </div>
 </div>
 
@@ -167,6 +326,8 @@ var currentSourceFilter = '전체';
 var currentMonthFilter = '전체';
 var complaintOnly = false;
 var autoRefreshTimer = null;
+var prevOverallTotal = null;
+var newResponseCount = 0;
 
 // ---- 코드 게이트 ----
 var savedCode = localStorage.getItem(STORAGE_KEY);
@@ -202,7 +363,7 @@ function tryLoad(code) {
   fetchAllSources(code).then(function(results){
     var anyOk = results.some(function(r){ return r.ok; });
     if (!anyOk) {
-      document.getElementById('gateErr').textContent = '코드가 올바르지 않습니다';
+      document.getElementById('gateErr').textContent = '코드가 올바르지 않아요';
       document.getElementById('gateErr').style.display = 'block';
       localStorage.removeItem(STORAGE_KEY);
       return;
@@ -211,6 +372,7 @@ function tryLoad(code) {
     document.getElementById('gate').style.display = 'none';
     document.getElementById('app').style.display = 'block';
     allData = results.reduce(function(acc, r){ return acc.concat(r.rows); }, []);
+    prevOverallTotal = allData.length; // 최초 로드 기준값 (반짝임 없음)
     showSourceWarning(results);
     render();
     startAutoRefresh(code);
@@ -225,7 +387,7 @@ function showSourceWarning(results) {
       var src = SOURCES.filter(function(s){ return s.key === r.key; })[0];
       return src ? src.label : r.key;
     }).join(', ');
-    el.textContent = '⚠️ ' + names + ' 설문 데이터를 불러오지 못했습니다 (코드 또는 URL 확인 필요)';
+    el.textContent = names + ' 설문을 불러오지 못했어요. 접속코드나 주소를 확인해 주세요';
     el.style.display = 'block';
   } else {
     el.style.display = 'none';
@@ -243,7 +405,13 @@ function refresh(code) {
   fetchAllSources(code).then(function(results){
     var anyOk = results.some(function(r){ return r.ok; });
     if (anyOk) {
-      allData = results.reduce(function(acc, r){ return acc.concat(r.rows); }, []);
+      var newData = results.reduce(function(acc, r){ return acc.concat(r.rows); }, []);
+      var newTotal = newData.length;
+      if (prevOverallTotal !== null && newTotal > prevOverallTotal) {
+        newResponseCount = newTotal - prevOverallTotal;
+      }
+      prevOverallTotal = newTotal;
+      allData = newData;
       showSourceWarning(results);
       render();
     }
@@ -324,8 +492,23 @@ function render() {
   var sourceLabelForTotal = currentSourceFilter === '전체'
     ? '전체'
     : (SOURCES.filter(function(s){ return s.key === currentSourceFilter; })[0] || {}).label;
-  document.getElementById('headerTotal').textContent =
-    '(' + sourceLabelForTotal + ') 누적 응답 총 ' + scoped.length + '명';
+  var headerTotalEl = document.getElementById('headerTotal');
+  headerTotalEl.textContent = sourceLabelForTotal + ' ' + scoped.length + '명 응답';
+
+  if (newResponseCount > 0) {
+    var badge = document.createElement('span');
+    badge.className = 'new-badge';
+    badge.textContent = '+' + newResponseCount;
+    headerTotalEl.appendChild(badge);
+    headerTotalEl.classList.remove('pulse');
+    void headerTotalEl.offsetWidth; // 애니메이션 재시작을 위한 리플로우
+    headerTotalEl.classList.add('pulse');
+    newResponseCount = 0; // 한 번 표시했으면 초기화
+    setTimeout(function(){
+      headerTotalEl.classList.remove('pulse');
+      if (badge.parentNode) badge.parentNode.removeChild(badge);
+    }, 4000);
+  }
 
   var courses = ['전체'];
   scoped.forEach(function(row){
@@ -343,7 +526,7 @@ function render() {
   });
   var alertChip = document.createElement('div');
   alertChip.className = 'chip alert' + (complaintOnly ? ' active' : '');
-  alertChip.textContent = '🚨 불편사항만';
+  alertChip.textContent = '불편사항만';
   alertChip.onclick = function(){ complaintOnly = !complaintOnly; render(); };
   filterBar.appendChild(alertChip);
 
@@ -363,7 +546,7 @@ function render() {
   if (monthKeys.length > 0) {
     var allChip = document.createElement('div');
     allChip.className = 'chip' + (currentMonthFilter === '전체' ? ' active' : '');
-    allChip.textContent = '전체 월';
+    allChip.textContent = '전체 기간';
     allChip.onclick = function(){ currentMonthFilter = '전체'; render(); };
     monthBar.appendChild(allChip);
 
@@ -397,21 +580,22 @@ function render() {
   listEl.innerHTML = '';
 
   if (filtered.length === 0) {
-    listEl.innerHTML = '<div class="empty"><div class="empty-icon">📭</div><div class="empty-text">표시할 응답이 없습니다</div></div>';
+    listEl.innerHTML = '<div class="empty"><div class="empty-icon">🗒️</div><div class="empty-text">아직 해당하는 응답이 없어요</div></div>';
   } else {
-    filtered.forEach(function(row){
+    filtered.forEach(function(row, idx){
       var avg = avgScore(row);
       var cls = scoreClass(avg);
       var card = document.createElement('div');
       card.className = 'card ' + cls;
+      card.style.animationDelay = Math.min(idx * 22, 260) + 'ms';
 
       var html = '';
       html += '<div class="card-top">';
       html += '  <div><div class="card-course">' + escapeHtml(row.courseName || '(과정명 미상)') +
               '<span class="src-badge ' + row.__source + '">' + escapeHtml(row.__sourceLabel) + '</span></div>';
-      html += '  <div class="card-meta">입교 ' + escapeHtml(row.eduDate || '-') + ' · No.' + escapeHtml(row.num) +
+      html += '  <div class="card-meta">' + escapeHtml(row.eduDate || '-') + ' 입교 · No.' + escapeHtml(row.num) +
               (row.transfer ? ' · 양수계획 ' + escapeHtml(row.transfer) : '') + '</div></div>';
-      html += '  <div class="card-score">' + (avg !== null ? avg.toFixed(1) : '-') + '<span class="unit"> /10</span></div>';
+      html += '  <div class="card-score">' + (avg !== null ? avg.toFixed(1) : '-') + '<span class="unit">점</span></div>';
       html += '</div>';
 
       var tags = '';
@@ -441,7 +625,7 @@ function render() {
 
   var now = new Date();
   document.getElementById('lastUpdated').textContent =
-    '업데이트 ' + now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
+    now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0') + ' 기준';
 }
 
 function escapeHtml(str) {
